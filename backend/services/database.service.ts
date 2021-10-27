@@ -17,5 +17,5 @@ export async function connectToDatabse() {
 
   usersCollection = db.collection(process.env.USERS_COLLECTION_NAME!);
   businessEntityCollection = db.collection(process.env.BUSINESS_ENTITY_COLLECTION_NAME!);
-  console.log(`Successfully connected to database: ${db.databaseName} and collection: ${usersCollection.collectionName}`);
+  console.log(`Successfully connected to database: ${db.databaseName} and collection: ${usersCollection.collectionName}, ${businessEntityCollection.collectionName}`);
 }
