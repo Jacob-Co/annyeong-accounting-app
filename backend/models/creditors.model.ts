@@ -1,12 +1,12 @@
 import { ObjectId } from "mongodb";
 import { BusinessEntity } from "./business-entities.model";
 
-export interface User {
+export interface Creditor {
   id?: ObjectId;
   businessEntity: ObjectId | BusinessEntity;
   firstName: string;
   lastName: string;
-  username: string;
-  password: string;
-  isAdmin: boolean;
+  nickName: string;
+  wholeName: string;
+  balance: number;
 }
