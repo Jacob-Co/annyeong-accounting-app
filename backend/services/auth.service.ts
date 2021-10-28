@@ -23,7 +23,7 @@ export function verifyUserToken(req: Request, res: Response, next: NextFunction)
   if (typeof token !== 'undefined') {
 		token = token.slice(7, token.length);
 
-    return jwt.verify(token, secret, async (err, data) => {
+    return jwt.verify(token, secret, (err, data) => {
       if (err) {
         console.error(err);
         return res.status(403).send('invalid token')
