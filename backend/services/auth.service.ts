@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { User } from '../user-defined-types';
+import { User } from '../models/users.model'
 import { Request, Response, NextFunction } from 'express';
 
 const secret = process.env.AUTH_SECRET || 'replace me with a secret';
