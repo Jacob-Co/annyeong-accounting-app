@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
-import { login, register } from '../controllers/users.controller';
+import { usersCollection } from '../services/database.service';
+import { generateUserAuthToken } from '../services/auth.service';
+import { User } from '../models/users.model';
 
 export const usersRouter = express.Router();
 usersRouter.use(express.json());
@@ -7,29 +9,19 @@ usersRouter.use(express.json());
 //POST
 usersRouter.post('/login', async (req: Request, res: Response) => {
   try {
-    const loginResult = await login(req.body);
-    if(loginResult.isSucess) {
-      res.status(200).send(loginResult);
-    } else {
-      res.status(400).send(loginResult);
-    }
+    
+    
   } catch(err: any) {
-    console.error(err);
-    res.status(500).send(err.message);
+
   }
 });
 
-usersRouter.post('/register', async (req: Request, res: Response) => {
+usersRouter.post('/', async (req: Request, res: Response) => {
   try {
-    const registerResult = await register(req.body);
-    if(registerResult) {
-      res.status(200).send(registerResult);
-    } else {
-      res.status(400).send(registerResult);
-    }
+    const newUser = req.body as User;
+
   } catch(err: any) {
-    console.error(err);
-    res.status(500).send(err.message);
+
   }
 });
 
