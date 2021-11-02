@@ -12,8 +12,8 @@ export class BusinessEntity {
   constructor(
     public name: string,
     public capital: number,
-    public capitalShare: number,
-    public incomeShare: number,
+    public capitalPercent: number,
+    public incomePercent: number,
     public id?: ObjectId,
   ) {}
 }

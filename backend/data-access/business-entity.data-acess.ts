@@ -1,12 +1,25 @@
 import { businessEntityCollection } from '../services/database.service';
-import businessEntity from '../models/users.model';
+import { BusinessEntity } from '../models/business-entities.model';
+import { ObjectId } from 'mongodb';
 
-export async function findOneBusinessEntity(query: any) {
-  return (await businessEntityCollection.findOne(query)) as unknown as businessEntity | null;
+export type updatedBusinessEntity = {
+    name?: string;
+    capital?: number;
+    capitalShare?: number;
+    incomeShare?: number;
+    id?: ObjectId;
 }
 
-export async function createBusinessEntity(newBusinessEntity: businessEntity) {
-  return await businessEntityCollection.insertOne(businessEntity);
+export async function findOneBusinessEntity(id: ObjectId) {
+  return (await businessEntityCollection.findOne({ id })) as unknown as BusinessEntity | null;
+}
+
+export async function createBusinessEntity(newBusinessEntity: BusinessEntity) {
+  return await businessEntityCollection.insertOne(newBusinessEntity);
+}
+
+export async function updateBusinessEntity(id: ObjectId, updatedDetails: any) {
+  return await businessEntityCollection.updateOne({ id }, { $set: updatedDetails });
 }
 
 // export async function 

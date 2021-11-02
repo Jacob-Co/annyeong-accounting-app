@@ -1,5 +1,5 @@
 import { usersCollection } from '../services/database.service';
-import User from '../models/users.model';
+import { User } from '../models/users.model';
 
 export async function findOneUser(query: any) {
   return (await usersCollection.findOne(query)) as unknown as User | null;
