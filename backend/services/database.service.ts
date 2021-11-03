@@ -24,6 +24,7 @@ export class DBWrapper {
 // export const collections: { users?: mongoDB.Collection } = {}
 export let usersCollection: mongoDB.Collection;
 export let businessEntityCollection: mongoDB.Collection;
+export let expenseTypesCollection: mongoDB.Collection;
 
 // Initialize Connection
 export async function connectToDatabse() {
@@ -35,5 +36,6 @@ export async function connectToDatabse() {
 
   usersCollection = db.collection(process.env.USERS_COLLECTION_NAME!);
   businessEntityCollection = db.collection(process.env.BUSINESS_ENTITY_COLLECTION_NAME!);
+  expenseTypesCollection = db.collection(process.env.EXPENSE_TYPE_COLLECTION_NAME!); 
   console.log(`Successfully connected to database: ${db.databaseName} and collection: ${usersCollection.collectionName}, ${businessEntityCollection.collectionName}`);
 }
