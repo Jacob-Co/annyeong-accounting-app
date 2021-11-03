@@ -2,7 +2,7 @@ import express from 'express';
 // import cors from 'cors';
 
 import { connectToDatabse } from './services/database.service';
-import { businessEntityRouter } from './routers/business-entity.router';
+import { businessEntityRouter } from './routers/business-entities.router';
 import { usersRouter } from './routers/users.router';
 
 const app = express();
