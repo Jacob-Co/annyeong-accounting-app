@@ -2,26 +2,52 @@ import express, { Request, Response } from 'express';
 import { usersCollection } from '../services/database.service';
 import { generateUserAuthToken } from '../services/auth.service';
 import { User } from '../models/users.model';
+import bcrypt from 'bcrypt';
 
 export const usersRouter = express.Router();
 usersRouter.use(express.json());
 
 //POST
-usersRouter.post('/login', async (req: Request, res: Response) => {
-  try {
-    
-    
-  } catch(err: any) {
-
-  }
-});
-
 usersRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newUser = req.body as User;
+   
+    const saltRounds = 10;
+    const hash = bcrypt.hashSync(newUser.password, saltRounds);
+    newUser.password = hash;
+    
+    const result = await usersCollection.insertOne(newUser);
+    
+    let token;
+    if (result.acknowledged === true) {
+      token = generateUserAuthToken(newUser);
+    }
 
+    (token !== undefined)
+      ? res.status(201).send(token)
+      : res.status(400).send('Failed to create user');
   } catch(err: any) {
+    console.error(err.message);
+    res.status(500).send('Error in creating user');
+  }
+});
 
+//GET
+usersRouter.post('/login', async (req: Request, res: Response) => {
+  try {
+    const { username, password } = req.body;
+    const result = await usersCollection.findOne({ username }) as User;    
+    
+    if (result === null || !bcrypt.compareSync(password, result.password)) {
+      return res.status(403).send('Incorrect credentials');
+    }
+    
+    const token = generateUserAuthToken(result);
+
+    res.status(200).send(token);
+  } catch(err: any) {
+    console.error(err.message);
+    res.status(500).send('Error in logging in');
   }
 });
 
