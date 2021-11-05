@@ -3,6 +3,7 @@ import { usersCollection } from '../services/database.service';
 import { generateUserAuthToken } from '../services/auth.service';
 import { User } from '../models/users.model';
 import bcrypt from 'bcrypt';
+import { ObjectId } from 'mongodb';
 
 export const usersRouter = express.Router();
 usersRouter.use(express.json());
@@ -11,7 +12,7 @@ usersRouter.use(express.json());
 usersRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newUser = req.body as User;
-   
+    newUser.businessEntity = new ObjectId(newUser.businessEntity.toString()); 
     const saltRounds = 10;
     const hash = bcrypt.hashSync(newUser.password, saltRounds);
     newUser.password = hash;
@@ -20,6 +21,7 @@ usersRouter.post('/', async (req: Request, res: Response) => {
     
     let token;
     if (result.acknowledged === true) {
+      newUser.id = result.insertedId;
       token = generateUserAuthToken(newUser);
     }
 
