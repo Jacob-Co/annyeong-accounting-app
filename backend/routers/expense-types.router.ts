@@ -10,7 +10,7 @@ expenseTypeRouter.use(verifyUserToken);
 //GET
 expenseTypeRouter.get('/all', async (req: Request, res: Response) => {
   try {
-    const {businessEntity}= req.body.token;
+    const businessEntity = new ObjectId(req.body.token.businessEntity);
     const allExpenseTypes = await expenseTypesCollection
       .find({ businessEntity }).toArray() as ExpenseType[];
     res.status(200).send(allExpenseTypes);
@@ -24,7 +24,7 @@ expenseTypeRouter.get('/all', async (req: Request, res: Response) => {
 expenseTypeRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newExpenseType = req.body.newExpenseType as ExpenseType;
-    newExpenseType.businessEntity = req.body.token.businessEntity;
+    newExpenseType.businessEntity = new ObjectId(req.body.token.businessEntity);
     const result = await expenseTypesCollection.insertOne(newExpenseType);
 
     result.acknowledged
