@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { BusinessEntity } from "./business-entities.model";
-import { ExpenseType } from "./expnese-types.model";
+import { ExpenseType } from "./expense-types.model";
 
 // export interface Expense {
 //   id?: ObjectId;
