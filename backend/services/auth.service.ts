@@ -26,6 +26,7 @@ export function verifyUserToken(req: Request, res: Response, next: NextFunction)
         console.error(err);
         return res.status(403).send('invalid token')
       } else {
+        req.body.token = data;
         return next();
       }
     })
@@ -46,7 +47,10 @@ export function verifyAdminToken(req: Request, res: Response, next: NextFunction
         console.error(err);
         return res.status(403).send('invalid token')
       } else {
-        if (data && data.isAdmin) return next();
+        if (data && data.isAdmin) {
+          req.body.token = data;
+          return next();
+        }
         return res.status(403).send('Not an admin token');
       }
     })
