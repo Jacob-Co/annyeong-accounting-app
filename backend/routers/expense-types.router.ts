@@ -2,14 +2,17 @@ import express, { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { expenseTypesCollection } from '../services/database.service';
 import { ExpenseType } from '../models/expense-types.model';
+import { verifyUserToken } from '../services/auth.service';
 
 export const expenseTypeRouter = express.Router();
 expenseTypeRouter.use(express.json());
-
+expenseTypeRouter.use(verifyUserToken);
 //GET
 expenseTypeRouter.get('/all', async (req: Request, res: Response) => {
   try {
-    const allExpenseTypes = await expenseTypesCollection.find({});
+    const {businessEntity}= req.body.token;
+    const allExpenseTypes = await expenseTypesCollection
+      .find({ businessEntity }).toArray() as ExpenseType[];
     res.status(200).send(allExpenseTypes);
   } catch (err: any) {
     console.error(err.message);
@@ -20,7 +23,8 @@ expenseTypeRouter.get('/all', async (req: Request, res: Response) => {
 //POST
 expenseTypeRouter.post('/', async (req: Request, res: Response) => {
   try {
-    const newExpenseType = req.body as ExpenseType;
+    const newExpenseType = req.body.newExpenseType as ExpenseType;
+    newExpenseType.businessEntity = req.body.token.businessEntity;
     const result = await expenseTypesCollection.insertOne(newExpenseType);
 
     result.acknowledged
