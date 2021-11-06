@@ -22,7 +22,7 @@ export class DailyAccounting {
   constructor(
     public businessEntity: ObjectId | BusinessEntity,
     public expenses: ObjectId[] | Expense[],
-    public credits: ObjectId[] | Credit,
+    // public credits: ObjectId[] | Credit,
     public date: number,
     public totalSales: number,
     public onlineSales: number,
