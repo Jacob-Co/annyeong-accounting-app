@@ -26,8 +26,8 @@ usersRouter.post('/', async (req: Request, res: Response) => {
     }
 
     (token !== undefined)
-      ? res.status(201).send(token)
-      : res.status(400).send('Failed to create user');
+      ? res.status(201).send(JSON.stringify(token))
+      : res.status(400).send(JSON.stringify('Failed to create user'));
   } catch(err: any) {
     console.error(err.message);
     res.status(500).send('Error in creating user');
@@ -46,7 +46,7 @@ usersRouter.post('/login', async (req: Request, res: Response) => {
     
     const token = generateUserAuthToken(result);
 
-    res.status(200).send(token);
+    res.status(200).send(JSON.stringify(token));
   } catch(err: any) {
     console.error(err.message);
     res.status(500).send('Error in logging in');
