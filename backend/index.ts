@@ -1,5 +1,5 @@
 import express from 'express';
-// import cors from 'cors';
+import cors from 'cors';
 
 import { connectToDatabse } from './services/database.service';
 import { businessEntityRouter } from './routers/business-entities.router';
@@ -13,6 +13,7 @@ const port = 3000;
 
 connectToDatabse()
   .then(() => {
+    app.use(cors());
     app.use('/api/users', usersRouter);
     app.use('/api/expenseTypes', expenseTypeRouter);
     app.use('/api/businessEntities', businessEntityRouter);
