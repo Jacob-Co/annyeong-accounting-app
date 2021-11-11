@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 import { businessEntityCollection } from '../services/database.service';
 import { BusinessEntity } from '../models/business-entities.model';
 import { verifyUserToken } from '../services/auth.service';
+import { getBusinessEntityRes } from '../../types/api-response-types';
 
 export const businessEntityRouter = express.Router();
 businessEntityRouter.use(express.json());
@@ -12,10 +13,18 @@ businessEntityRouter.get('/', verifyUserToken, async (req: Request, res: Respons
   try {
     const businessEntityId = new ObjectId(req.body.token.businessEntity);
     const result = await businessEntityCollection.findOne({ _id: businessEntityId});
+    if (result) {
+      const response = {
+        name: result!.name,
+        capital: result!.capital,
+        capitalPercent: result!.capitalPercent,
+        incomePercent: result!.number
+      } as getBusinessEntityRes
 
-    result
-      ? res.status(200).send(JSON.stringify(result))
-      : res.status(400).send(JSON.stringify('Could not find a business entity'))
+      res.status(200).send(JSON.stringify(response));
+    } else {
+      res.status(400).send('Could not find business entity'); 
+    }
   } catch(err: any) {
     console.error(err.message);
     res.status(500).send(JSON.stringify('Error in getting business entity'));
