@@ -1,4 +1,1 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-
-export const backendString = process.env.BACKEND_SERVER;
+export const backendString = process.env.VUE_APP_BACKEND_SERVER;

@@ -1,3 +1,5 @@
+import { backendString } from '@/utils/server.util';
+
 type loginCredentials = {
   username: string
   password: string
@@ -6,7 +8,7 @@ type loginCredentials = {
 export class Login {
   public static async impl(credentails: loginCredentials) {
     console.log(JSON.stringify(credentails)) 
-    const result = await fetch('http://localhost:3000/api/users/login', {
+    const result = await fetch(`${backendString}/api/users/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
