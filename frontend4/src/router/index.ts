@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../components/LoginForm.vue';
 import BusinessDetails from '../views/BusinessDetails.vue';
-import { isAuthenticated } from '@/utils/authorization.utils';
+import { isAuthenticated } from '@/utils/authorization.util';
 
 const routes: Array<RouteRecordRaw> = [
   {
