@@ -4,6 +4,7 @@
   "description": "Keep track of leaves",
   "main": "index.js",
   "scripts": {
+    "serve": "nodemon index.ts",
     "test": "jest"
   },
   "author": "",
