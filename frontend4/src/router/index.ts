@@ -28,4 +28,16 @@ const router = createRouter({
   routes
 })
 
+function isAuthenticated(): boolean {
+  return !!window.localStorage.getItem('annyeongToken');
+}
+
+router.beforeEach((to, from, next) => {
+  if(to.name !== 'Login' && !isAuthenticated()) {
+    next({ name: 'Login' });
+  } else {
+    next();
+  }
+})
+
 export default router
