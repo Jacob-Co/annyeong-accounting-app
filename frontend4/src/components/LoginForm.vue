@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <form>
     <div>
       <label for="usernameInput">Username</label>
       <input type="text" id="usernameInput" v-model="username"/>
@@ -9,7 +9,7 @@
       <input type="password" id="passwordInput" v-model="password"/>
     </div>
     <button class="btn btn-primary" @click="loginClick">Login</button>
-  </div>
+  </form>
 </template>
 
 <script lang="ts">
@@ -20,7 +20,8 @@
     public username = '';
     public password = '';
 
-    public loginClick() {
+    public loginClick(event: Event) {
+      event.preventDefault(); 
       Login.impl({ username: this.username, password: this.password});
     }
   }
