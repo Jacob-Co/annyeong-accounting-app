@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../components/LoginForm.vue';
+import { isAuthenticated } from '@/utils/authorization.utils';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -27,10 +28,6 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
-
-function isAuthenticated(): boolean {
-  return !!window.localStorage.getItem('annyeongToken');
-}
 
 router.beforeEach((to, from, next) => {
   if(to.name !== 'Login' && !isAuthenticated()) {
