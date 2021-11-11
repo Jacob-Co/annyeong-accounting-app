@@ -18,7 +18,7 @@ businessEntityRouter.get('/', verifyUserToken, async (req: Request, res: Respons
         name: result!.name,
         capital: result!.capital,
         capitalPercent: result!.capitalPercent,
-        incomePercent: result!.number
+        incomePercent: result!.incomePercent
       } as getBusinessEntityRes
 
       res.status(200).send(JSON.stringify(response));
