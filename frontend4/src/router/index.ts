@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Login from '../components/LoginForm.vue';
 import BusinessDetails from '../views/BusinessDetails.vue';
 import { isAuthenticated } from '@/utils/authorization.util';
+import DailyAccounting from '../views/DailyAccounting.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -27,6 +28,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/businessDetails',
     name: 'BusinessDetails',
     component: BusinessDetails
+  },
+  {
+    path: '/DailyAccounting',
+    name: 'DailyAccounting',
+    component: DailyAccounting
   }
 ]
 
