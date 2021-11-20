@@ -4,6 +4,12 @@
       <input type="date"/>
       <select class="form-select" aria-label="Default select example">
         <option selected disabled>Expnese Type</option>
+        <option 
+          v-for="expenseType in expenseTypes" 
+          :key="expenseType._id"
+        >
+          {{expenseType.type}}
+        </option>
       </select>
       <input type="number" placeholder="price"/>
       <input type="string" placeholder="remarks"/>
@@ -23,11 +29,13 @@
 
   @Options({})
   export default class ExpenseForm extends Vue {
+    public expenseTypes = [];
+
     mounted() {
-     this.getExpenseTypes().then(res => console.log(res)) 
+     this.getExpenseTypes().then(res => this.expenseTypes = res) 
     }
 
-    public async getExpenseTypes() {
+    private async getExpenseTypes() {
       const result = await fetch(`${backendString}/api/expenseTypes/all`, {
         method: 'GET',
         headers: {
