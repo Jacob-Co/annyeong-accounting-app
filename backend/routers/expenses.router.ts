@@ -3,6 +3,7 @@ import { expensesCollection } from '../services/database.service';
 import express, { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { verifyUserToken } from '../services/auth.service';
+import { json } from 'stream/consumers';
 
 export const expensesRouter = express.Router();
 expensesRouter.use(express.json());
@@ -47,17 +48,19 @@ expensesRouter.post('/batch', async (req: Request, res: Response) => {
   try {
     const newExpenses = req.body.newExpenses as Expense[];
     const businessEntity = new ObjectId(req.body.token.businessEntity);
+    const userId = new ObjectId(req.body.token.id)
     for (const newExpense of newExpenses) {
+      newExpense.user = userId;
       newExpense.businessEntity = businessEntity;
       newExpense.expenseType = new ObjectId(newExpense.expenseType.toString());
     }
     const result = await expensesCollection.insertMany(newExpenses);
     
     result.acknowledged
-      ? res.status(200).send('Added new expenses')
+      ? res.status(200).send(JSON.stringify('Added new expenses'))
       : res.status(400).send('Error in saving new expenses');
   } catch(err: any) {
     console.error(err.message);
-    res.status(500).send('Error in creating an expense');
+    res.status(500).send(JSON.stringify('Error in creating an expense'));
   }
 })
