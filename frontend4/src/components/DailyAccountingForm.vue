@@ -1,7 +1,6 @@
 <template>
   <form>
     <div>
-      <label for="dateInput">Date Today</label>
       <input
         type="date"
         v-model="dateInput"
@@ -9,33 +8,99 @@
       />
     </div>
 
-    <div>
-      <label for="totalSales">Total Sales</label>
+    <div class="input-group">
+      <span class="input-group-text">Total</span>
       <input
+        class="form-control"
         type="number"
         @keypress="calculatePhysicalSales"
         v-model="totalSalesInput"
         ref="tsInput"
       />
+      <span class="input-group-text">php</span>
     </div>
 
-    <div>
-      <label for="onlineSales">Online Sales</label>
+    <div class="input-group">
+      <span class="input-group-text">Online</span>
       <input
+        class="form-control"
         type="number"
         @keypress="calculatePhysicalSales"
         v-model="onlineSalesInput"
       />
+      <span class="input-group-text">php</span>
     </div>
 
-    <div>
-      <label for="physicalSales">Physical Sales</label>
+    <div class="input-group">
+      <span class="input-group-text">Physical</span>
       <input
+        class="form-control"
         type="number"
         v-model="physicalSalesInput"
         disabled
       />
+      <span class="input-group-text">php</span>
     </div>
+
+    <div class="input-group">
+      <span class="input-group-text">Expenses</span>
+      <input
+        class="form-control"
+        type="number"
+        disabled
+      />
+      <span class="input-group-text">php</span>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-text bg-info">Net Sales</span>
+      <input
+        class="form-control"
+        type="number"
+        disabled
+      />
+      <span class="input-group-text">php</span>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-text">Credit</span>
+      <input
+        class="form-control"
+        type="number"
+        disabled
+      />
+      <span class="input-group-text">php</span>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-text bg-success text-white">Take Home</span>
+      <input
+        class="form-control"
+        type="number"
+        disabled
+      />
+      <span class="input-group-text">php</span>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-text">Register</span>
+      <input
+        class="form-control"
+        type="number"
+        placeholder="0"
+      />
+      <span class="input-group-text">php</span>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-text">Remarks:</span>
+      <input
+        class="form-control"
+        type="text"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
   </form>
 </template>
 
@@ -43,6 +108,7 @@
   import { Vue, Options } from 'vue-class-component';
   import { Watch } from 'vue-property-decorator';
 
+  @Options({})
   export default class DailyAccountingForm extends Vue {
     public dateInput = '1998-02-10';
     public totalSalesInput = 0;
