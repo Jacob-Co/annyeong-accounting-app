@@ -106,7 +106,7 @@
 
 <script lang="ts">
   import { Vue, Options } from 'vue-class-component';
-  import { Watch } from 'vue-property-decorator';
+  // import { Watch } from 'vue-property-decorator';
 
   @Options({})
   export default class DailyAccountingForm extends Vue {
@@ -120,14 +120,14 @@
       console.log(new Date(this.dateInput).toString())
     }
 
-    @Watch('tsInput')
-    onTsInputChange(val: number, oldVal: number) {
-      console.log(val);
-      console.log(oldVal);
-    }
-    public calculatePhysicalSales() {
-      this.physicalSalesInput = this.totalSalesInput - this.onlineSalesInput;
-    }
+    // @Watch('tsInput')
+    // onTsInputChange(val: number, oldVal: number) {
+    //   console.log(val);
+    //   console.log(oldVal);
+    // }
+    // public calculatePhysicalSales() {
+    //   this.physicalSalesInput = this.totalSalesInput - this.onlineSalesInput;
+    // }
 
     private getDateTodayInYMD() {
       const today = new Date();

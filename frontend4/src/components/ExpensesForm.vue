@@ -18,9 +18,24 @@
 
 <script lang="ts">
   import { Vue, Options } from 'vue-class-component';
+  import { backendString } from '../utils/server.util';
+  import { getBearerToken } from '../utils/authorization.util';
 
   @Options({})
   export default class ExpenseForm extends Vue {
+    mounted() {
+     this.getExpenseTypes().then(res => console.log(res)) 
+    }
+
+    public async getExpenseTypes() {
+      const result = await fetch(`${backendString}/api/expenseTypes/all`, {
+        method: 'GET',
+        headers: {
+          'Authorization': getBearerToken() 
+        },
+      })
+      return await result.json();
+    }
 
   }
 </script>
