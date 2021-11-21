@@ -62,6 +62,17 @@
         </button>
       </div>
     </form>
+
+    <h4>Total: {{totalExpenses * -1}}</h4>
+    <ul class="list-group">
+      <li
+        v-for="expense in expenses"
+        :key="expense._id"
+        class="list-group-item"
+      >
+        {{expense.expenseType}}: {{expense.price * -1}}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -70,6 +81,7 @@
   import { backendString } from '../utils/server.util';
   import { getBearerToken } from '../utils/authorization.util';
   import { getDateTodayInYMD } from '../utils/date.util';
+  import store from '../store/index';
 
   @Options({})
   export default class ExpenseForm extends Vue {
@@ -79,9 +91,39 @@
     public expenseTypeInput = '';
     public remarksInput = '';
     public isLoading = false;
+    public expenses = [];
+    public totalExpenses = 0;
 
     mounted() {
-     this.getExpenseTypes().then(res => this.expenseTypes = res) 
+     this.getExpenseTypes().then(res => this.expenseTypes = res);
+     this.setTodayExpenses();
+    }
+
+    private async setTodayExpenses() {
+      this.getTodaysExpenses().then((res) => {
+        store.commit('setExpenses', res);
+        this.expenses = res;
+        this.totalExpenses = this.expenses.reduce((val, newVal) => {
+          return val + newVal['price'];
+        }, 0);
+      });
+    }
+
+    private async getTodaysExpenses() {
+      const unixStart = new Date(this.dateInput).getTime();
+      const unixOneDayInMS = 86400 * 1000;
+      const unixEnd = unixStart + unixOneDayInMS - 1; 
+
+      const url = `${backendString}/api/expenses/${unixStart}/${unixEnd}/0`;
+
+      const result = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': getBearerToken()
+        }
+      });
+
+      return await result.json();
     }
 
     private async getExpenseTypes() {
@@ -127,6 +169,7 @@
         this.isLoading = false;
         return;
       }
+      this.setTodayExpenses();
       this.isLoading = false;
       this.resetInputs(); 
     }

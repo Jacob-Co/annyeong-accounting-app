@@ -5,6 +5,7 @@ import { InsertOneResult, ObjectId } from 'mongodb';
 import { verifyUserToken } from '../services/auth.service';
 import { businessEntityCollection } from '../services/database.service';
 import { mongoDBClient } from '../services/database.service';
+import { expenseTypesCollection } from '../services/database.service';
 
 export const expensesRouter = express.Router();
 expensesRouter.use(express.json());
@@ -35,8 +36,16 @@ expensesRouter.get('/:startUnix/:endUnix/:expenseTypeId',
       const query = (expenseTypeId !== '0')
         ? { expenseType: new ObjectId(expenseTypeId), businessEntity, date: {$gte: startUnix, $lte: endUnix}}
         : { businessEntity, date: {$gte: startUnix, $lte: endUnix}}
+
       const result = await expensesCollection.find(query).toArray() as Expense[];
-      res.status(200).send(result); 
+
+      const populatedResult = await Promise.all(result.map(async expense => {
+        const query = { _id: new ObjectId(expense.expenseType.toString())};
+        const resultingExpenseType = await expenseTypesCollection.findOne(query);
+        return { ...expense, expenseType: resultingExpenseType!.type}
+      }));
+      
+      res.status(200).send(JSON.stringify(populatedResult)); 
     } catch(err: any) {
       console.error(err.message);
       res.status(500).send('Error in getting expenses');
