@@ -5,7 +5,6 @@ import { InsertOneResult, ObjectId } from 'mongodb';
 import { verifyUserToken } from '../services/auth.service';
 import { businessEntityCollection } from '../services/database.service';
 import { mongoDBClient } from '../services/database.service';
-import { json } from 'stream/consumers';
 
 export const expensesRouter = express.Router();
 expensesRouter.use(express.json());

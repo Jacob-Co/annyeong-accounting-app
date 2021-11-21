@@ -32,6 +32,7 @@ export let dailyAccountingsCollection: mongoDB.Collection;
 export let creditorsCollection: mongoDB.Collection;
 export let creditsCollection: mongoDB.Collection;
 export let distributorsCollection: mongoDB.Collection;
+export let stocksCollection: mongoDB.Collection;
 
 // Initialize Connection
 export async function connectToDatabse() {
@@ -41,6 +42,7 @@ export async function connectToDatabse() {
   await mongoDBClient.connect();
   const db: mongoDB.Db = mongoDBClient.db(process.env.DB_NAME);
 
+  stocksCollection = db.collection(process.env.STOCKS_COLLECTION_NAME!);
   distributorsCollection = db.collection(process.env.DISTRIBUTORS_COLLECTION_NAME!);
   creditsCollection = db.collection(process.env.CREDITS_COLLECTION_NAME!);
   creditorsCollection = db.collection(process.env.CREDITORS_COLLECTION_NAME!);
