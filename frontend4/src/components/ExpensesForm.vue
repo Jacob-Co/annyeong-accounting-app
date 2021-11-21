@@ -95,19 +95,19 @@
     }
 
     private async sendNewExpense() {
-      const body = [{
+      const body = {
         date: new Date(this.dateInput).getTime(),
         expenseType: this.expenseTypeInput,
-        price: this.priceInput,
+        price: this.priceInput * -1,
         remarks: this.remarksInput
-      }];
-      const result = await fetch(`${backendString}/api/expenses/batch`, {
+      };
+      const result = await fetch(`${backendString}/api/expenses/`, {
         method: 'POST',
         headers: {
           'Authorization': getBearerToken(),
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ newExpenses: body}) 
+        body: JSON.stringify({ newExpense: body}) 
       });
       return await result;
     }
