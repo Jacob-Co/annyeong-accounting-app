@@ -32,6 +32,20 @@
 
         <div class="input-group">
           <span class="input-group-text">Price</span>
+          <span 
+            class="input-group-text bg-danger" 
+            v-show="isDebt"
+            @click="toggleDebt"
+          >
+            -
+          </span>
+          <span 
+            class="input-group-text bg-success"
+            v-show="!isDebt"
+            @click="toggleDebt"
+          >
+            +
+          </span>
           <input 
             class="form-control" 
             type="number" 
@@ -78,9 +92,14 @@
     public creditorInput = '';
     public remarksInput = '';
     public isLoading = false;
+    public isDebt = true;
 
     mounted() {
      this.getCreditors().then(res => this.creditors = res) 
+    }
+
+    public toggleDebt() {
+      this.isDebt = !this.isDebt;
     }
 
     private async getCreditors() {
@@ -93,20 +112,26 @@
       return await result.json();
     }
 
-    private async sendNewExpense() {
-      const body = [{
+    private getAmount() {
+      return this.isDebt
+        ? this.priceInput * -1
+        : this.priceInput
+    }
+
+    private async sendNewCredit() {
+      const body = {
         date: new Date(this.dateInput).getTime(),
         creditor: this.creditorInput,
-        price: this.priceInput,
+        amount: this.getAmount(),
         remarks: this.remarksInput
-      }];
-      const result = await fetch(`${backendString}/api/expenses/batch`, {
+      };
+      const result = await fetch(`${backendString}/api/credits/`, {
         method: 'POST',
         headers: {
           'Authorization': getBearerToken(),
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ newExpenses: body}) 
+        body: JSON.stringify({ credit: body}) 
       });
       return await result;
     }
@@ -120,7 +145,7 @@
     public async submit(e: Event) {
       e.preventDefault();
       this.isLoading = true;
-      const result = await this.sendNewExpense();
+      const result = await this.sendNewCredit();
       if (result.status !== 200) {
         alert('Error');
         this.isLoading = false;

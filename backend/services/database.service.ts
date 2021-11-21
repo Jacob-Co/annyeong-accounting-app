@@ -22,21 +22,25 @@ export class DBWrapper {
 
 // Global Variables
 // export const collections: { users?: mongoDB.Collection } = {}
+export let mongoDBClient: mongoDB.MongoClient;
+
 export let usersCollection: mongoDB.Collection;
 export let businessEntityCollection: mongoDB.Collection;
 export let expenseTypesCollection: mongoDB.Collection;
 export let expensesCollection: mongoDB.Collection;
 export let dailyAccountingsCollection: mongoDB.Collection;
 export let creditorsCollection: mongoDB.Collection;
+export let creditsCollection: mongoDB.Collection;
 
 // Initialize Connection
 export async function connectToDatabse() {
   dotenv.config();
-  const client: mongoDB.MongoClient = 
+  mongoDBClient = 
     new mongoDB.MongoClient(process.env.DB_CONN_STRING!);
-  await client.connect();
-  const db: mongoDB.Db = client.db(process.env.DB_NAME);
+  await mongoDBClient.connect();
+  const db: mongoDB.Db = mongoDBClient.db(process.env.DB_NAME);
 
+  creditsCollection = db.collection(process.env.CREDITS_COLLECTION_NAME!);
   creditorsCollection = db.collection(process.env.CREDITORS_COLLECTION_NAME!);
   usersCollection = db.collection(process.env.USERS_COLLECTION_NAME!);
   businessEntityCollection = db.collection(process.env.BUSINESS_ENTITY_COLLECTION_NAME!);
