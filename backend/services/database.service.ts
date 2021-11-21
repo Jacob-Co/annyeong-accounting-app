@@ -27,6 +27,7 @@ export let businessEntityCollection: mongoDB.Collection;
 export let expenseTypesCollection: mongoDB.Collection;
 export let expensesCollection: mongoDB.Collection;
 export let dailyAccountingsCollection: mongoDB.Collection;
+export let creditorsCollection: mongoDB.Collection;
 
 // Initialize Connection
 export async function connectToDatabse() {
@@ -36,6 +37,7 @@ export async function connectToDatabse() {
   await client.connect();
   const db: mongoDB.Db = client.db(process.env.DB_NAME);
 
+  creditorsCollection = db.collection(process.env.CREDITORS_COLLECTION_NAME!);
   usersCollection = db.collection(process.env.USERS_COLLECTION_NAME!);
   businessEntityCollection = db.collection(process.env.BUSINESS_ENTITY_COLLECTION_NAME!);
   expenseTypesCollection = db.collection(process.env.EXPENSE_TYPE_COLLECTION_NAME!);
