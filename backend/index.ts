@@ -9,6 +9,7 @@ import { expensesRouter } from './routers/expenses.router';
 import { dailyAccountingRouter } from './routers/daily-accountings.router';
 import { creditorsRouter } from './routers/creditors.router';
 import { creditsRouter } from './routers/credits.router';
+import { distributorsRouter } from './routers/distributor.router';
 
 const app = express();
 const port = 3000;
@@ -23,6 +24,8 @@ connectToDatabse()
     app.use('/api/dailyAccountings', dailyAccountingRouter);
     app.use('/api/creditors', creditorsRouter);
     app.use('/api/credits', creditsRouter);
+    app.use('/api/distributors', distributorsRouter);
+
     app.listen(port, () => {
       console.log(`Server started at port ${port}`);
     });
