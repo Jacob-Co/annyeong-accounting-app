@@ -69,8 +69,12 @@
         v-for="expense in expenses"
         :key="expense._id"
         class="list-group-item"
+        aria-label="test"
       >
-        {{expense.expenseType}}: {{expense.price * -1}}
+        <details>
+          <summary>{{expense.expenseType}}: {{expense.price * -1}}</summary>
+          {{expense.remarks || 'No remarks'}}
+        </details>
       </li>
     </ul>
   </div>
