@@ -48,6 +48,7 @@
         class="form-control"
         type="number"
         disabled
+        v-model="expenseTotal"
       />
       <span class="input-group-text">php</span>
     </div>
@@ -68,6 +69,7 @@
         class="form-control"
         type="number"
         disabled
+        v-model="creditTotal"
       />
       <span class="input-group-text">php</span>
     </div>
@@ -106,9 +108,18 @@
 
 <script lang="ts">
   import { Vue, Options } from 'vue-class-component';
-  // import { Watch } from 'vue-property-decorator';
+  import store from '../store/index';
 
-  @Options({})
+  @Options({
+    computed: {
+      expenseTotal() {
+        return store.state.expenseTotal
+      },
+      creditTotal() {
+        return store.state.creditTotal
+      }
+    }
+  })
   export default class DailyAccountingForm extends Vue {
     public dateInput = '1998-02-10';
     public totalSalesInput = 0;
