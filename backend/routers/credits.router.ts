@@ -21,7 +21,7 @@ creditsRouter.get('/:startUnix/:endUnix/:creditorId',
 
       const query = (creditorId === '0')
         ? {businessEntity, date: {$gte: startUnix, $lte: endUnix}}
-        : {creditorId: new ObjectId(creditorId), businessEntity, date: {$gte: startUnix, $lte: endUnix}}
+        : {creditor: new ObjectId(creditorId), businessEntity, date: {$gte: startUnix, $lte: endUnix}}
       
       const result = await creditsCollection.find(query).toArray() as Credit[];
       
