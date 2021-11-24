@@ -75,6 +75,21 @@
         </button>
       </div>
     </form>
+    
+    <h4>Total: {{ totalCredits }}</h4>
+    <ul class="list-group">
+      <li
+        v-for="credit in credits"
+        :key="credit._id"
+        class="list-group-item"
+        aria-label="test"
+      >
+        <details>
+          <summary>{{credit.creditor}}: {{credit.amount}}</summary>
+          {{credit.remarks || 'No remarks'}}
+        </details>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -83,10 +98,13 @@
   import { backendString } from '../utils/server.util';
   import { getBearerToken } from '../utils/authorization.util';
   import { getDateTodayInYMD } from '../utils/date.util';
+  import store from '../store/index';
 
   @Options({})
   export default class CreditorForm extends Vue {
     public creditors = [];
+    public credits = [];
+    public totalCredits = 0;
     public dateInput = getDateTodayInYMD();
     public priceInput = NaN;
     public creditorInput = '';
@@ -95,11 +113,40 @@
     public isDebt = true;
 
     mounted() {
-     this.getCreditors().then(res => this.creditors = res) 
+     this.getCreditors().then(res => this.creditors = res);
+    //  this.getTodaysCredits().then(res => console.log(res));
+    this.setTodaysCredits();
     }
 
     public toggleDebt() {
       this.isDebt = !this.isDebt;
+    }
+
+    private async setTodaysCredits() {
+      this.getTodaysCredits().then(res => {
+        this.credits = res;
+        this.totalCredits = this.credits.reduce((val, curVal) => {
+          return val + curVal['amount']
+        }, 0);
+        store.commit('setCreditTotal', this.totalCredits);
+      });
+    }
+
+    private async getTodaysCredits() {
+      const unixStart = new Date(this.dateInput).getTime();
+      const unixOneDayInMS = 86400 * 1000;
+      const unixEnd = unixStart + unixOneDayInMS - 1; 
+
+      const url = `${backendString}/api/credits/${unixStart}/${unixEnd}/0`;
+
+      const result = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': getBearerToken()
+        }
+      });
+
+      return await result.json();
     }
 
     private async getCreditors() {
@@ -152,6 +199,7 @@
         return;
       }
       this.isLoading = false;
+      this.setTodaysCredits();
       this.resetInputs(); 
     }
 
