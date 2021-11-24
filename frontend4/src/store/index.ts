@@ -2,20 +2,15 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    expenses: [],
+    expenseTotal: 0,
     creditTotal: 0 
   },
   mutations: {
-    setExpenses (state, newExpenses) {
-      state.expenses = newExpenses
+    setExpenseTotal (state, newExpenseTotal) {
+      state.expenseTotal = newExpenseTotal
     },
     setCreditTotal(state, newCreditTotal) {
-      state.expenses = newCreditTotal
-    }
-  },
-  getters: {
-    getExpenses: state => {
-      return state.expenses
+      state.creditTotal = newCreditTotal
     }
   },
   actions: {

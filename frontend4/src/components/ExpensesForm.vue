@@ -105,11 +105,11 @@
 
     private async setTodayExpenses() {
       this.getTodaysExpenses().then((res) => {
-        store.commit('setExpenses', res);
         this.expenses = res;
         this.totalExpenses = this.expenses.reduce((val, newVal) => {
           return val + newVal['price'];
         }, 0);
+        store.commit('setExpenseTotal', this.totalExpenses);
       });
     }
 
