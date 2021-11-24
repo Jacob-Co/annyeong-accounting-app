@@ -58,6 +58,7 @@
       <input
         class="form-control"
         type="number"
+        v-model="netSales"
         disabled
       />
       <span class="input-group-text">php</span>
@@ -80,6 +81,7 @@
         class="form-control"
         type="number"
         disabled
+        v-model="takeHome"
       />
       <span class="input-group-text">php</span>
     </div>
@@ -113,18 +115,30 @@
   @Options({
     computed: {
       expenseTotal() {
+        this._expenseTotal = store.state.expenseTotal
         return store.state.expenseTotal
       },
       creditTotal() {
+        this._creditTotal = store.state.creditTotal
         return store.state.creditTotal
+      },
+      physicalSalesInput() {
+        return this.totalSalesInput - this.onlineSalesInput;
+      },
+      netSales() {
+        return this.totalSalesInput + this._expenseTotal 
+      },
+      takeHome() {
+        return this.totalSalesInput + this._expenseTotal + this._creditTotal
       }
     }
   })
   export default class DailyAccountingForm extends Vue {
     public dateInput = '1998-02-10';
-    public totalSalesInput = 0;
-    public onlineSalesInput = 0;
-    public physicalSalesInput = this.totalSalesInput - this.onlineSalesInput
+    public totalSalesInput = NaN;
+    public onlineSalesInput = NaN;
+    private _expenseTotal = 0;
+    private _creditTotal = 0;
 
     mounted() {
       this.dateInput = this.getDateTodayInYMD();
