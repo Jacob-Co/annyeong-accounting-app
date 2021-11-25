@@ -1,8 +1,9 @@
 import { DailyAccounting } from "../models/daily-accoutings.model";
-import { dailyAccountingsCollection } from "../services/database.service";
+import { businessEntityCollection, dailyAccountingsCollection, mongoDBClient } from "../services/database.service";
 import express, { Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
+import { ObjectId, InsertOneResult } from 'mongodb';
 import { verifyUserToken } from "../services/auth.service";
+import { BusinessEntity } from "../models/business-entities.model";
 
 export const dailyAccountingRouter = express.Router();
 dailyAccountingRouter.use(express.json());
@@ -25,19 +26,44 @@ dailyAccountingRouter.get('/:startUnix/:endUnix', async (req: Request, res: Resp
 
 // POST
 dailyAccountingRouter.post('/', async (req: Request, res: Response) => {
+  const session = mongoDBClient.startSession();
   try {
     const newDailyAccounting = req.body.newDailyAccounting as DailyAccounting;
-    newDailyAccounting.businessEntity = new ObjectId(req.body.token.businessEntity);
+    const businessEntityId = new ObjectId(req.body.token.businessEntity);
+    newDailyAccounting.businessEntity = businessEntityId;  
     // for(let i = 0; i < newDailyAccounting.expenses.length; i++) {
     //   const expensesID = new ObjectId(newDailyAccounting.expenses[i].toString());
     //   newDailyAccounting.expenses[i] = expensesID;
     // }
-    const result = await dailyAccountingsCollection.insertOne(newDailyAccounting);
-    result.acknowledged
+    let result: InsertOneResult<Document>
+
+    await session.withTransaction(async () => {
+      result = await dailyAccountingsCollection.insertOne(newDailyAccounting);
+      
+      const filter = {
+        _id: businessEntityId
+      }
+
+      const { capitalPercent, incomePercent } = await businessEntityCollection
+        .findOne(filter) as BusinessEntity;
+      
+      const update = {
+        $inc: {
+          income: newDailyAccounting.totalSales * incomePercent / 100,
+          capital: newDailyAccounting.totalSales * capitalPercent / 100
+        }
+      }
+
+      await businessEntityCollection.updateOne(filter, update);
+    });
+
+    result!.acknowledged
       ? res.status(200).send('Successfully added new daily accounting')
       : res.status(400).send('Could not save new daily accounting');
   } catch(err: any) {
     console.error(err.message);
     res.status(500).send('Error in saving new daily accouting');
+  } finally {
+    session.endSession();
   }
 })
