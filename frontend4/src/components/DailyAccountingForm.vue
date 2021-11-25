@@ -134,6 +134,7 @@
   import store from '../store/index';
   import { backendString } from '../utils/server.util';
   import { getBearerToken } from '../utils/authorization.util';
+  import { getDateTodayInYMD } from '../utils/date.util';
 
   @Options({
     computed: {
@@ -157,7 +158,7 @@
     }
   })
   export default class DailyAccountingForm extends Vue {
-    public dateInput = '1998-02-10';
+    public dateInput = getDateTodayInYMD();
     public totalSalesInput = NaN;
     public onlineSalesInput = NaN;
     public cashInRegisterInput = NaN;
@@ -168,22 +169,6 @@
     public isAccomplished = false;
 
     mounted() {
-      this.dateInput = this.getDateTodayInYMD();
-    }
-
-    private getDateTodayInYMD() {
-      const today = new Date();
-      const date = this.addPreZero(today.getDate().toString());
-      const month = this.addPreZero((today.getMonth() + 1).toString());
-      const year = today.getFullYear();
-      return `${year}-${month}-${date}`
-    }
-
-    private addPreZero(str: string) {
-      if (str.length === 1) {
-        return `0${str}`
-      }
-      return str;
     }
 
     private async sendNewDailyAccounting() {
