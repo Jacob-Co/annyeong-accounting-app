@@ -4,7 +4,35 @@
       <span class="visually-hidden">Loading...</span>
     </div>
 
-    <form v-show="!isLoading">
+    <div v-show="isAccomplished">
+      <h4>Daily Accounting:</h4>
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          aria-label="test"
+          v-for="dailyAccounting in dailyAccountings"
+          :key="dailyAccounting._id"
+        >
+          <div class="card">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Total Sales: {{dailyAccounting.totalSales}}</li>
+              <li class="list-group-item">Online Sales: {{dailyAccounting.onlineSales}}</li>
+              <li class="list-group-item">Physical Sales: {{dailyAccounting.physicalSales}}</li>
+              <li class="list-group-item">Expenses: {{dailyAccounting.expenses}}</li>
+              <li class="list-group-item">Net Sales: {{dailyAccounting.netSales}}</li>
+              <li class="list-group-item">Credits: {{dailyAccounting.credits}}</li>
+              <li class="list-group-item">Take Home: {{dailyAccounting.takeHomeCash}}</li>
+              <li class="list-group-item">Cash in Register: {{dailyAccounting.cashInRegister}}</li>
+              <li class="list-group-item">Remarks: {{dailyAccounting.remarks}}</li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+
+      <button class="bg-danger btn text-white">Delete</button>
+    </div>
+
+    <form v-show="!isLoading && !isAccomplished">
       <div>
         <input
           type="date"
@@ -165,15 +193,46 @@
     public remarksInput = "";
     private _expenseTotal = 0;
     private _creditTotal = 0;
-    public isLoading = false;
+    public isLoading = true;
     public isAccomplished = false;
+    public dailyAccountings = [];
 
     mounted() {
+      this.setTodaysDailyAccounting();
+    }
+
+    private async getTodaysDailyAccounting() {
+      const unixStart = new Date(this.dateInput).getTime();
+      const unixOneDayInMS = 86400 * 1000;
+      const unixEnd = unixStart + unixOneDayInMS - 1; 
+
+      const url = `${backendString}/api/dailyAccountings/${unixStart}/${unixEnd}`;
+
+      const result = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': getBearerToken()
+        }
+      });
+
+      return await result.json();
+    }
+
+    private async setTodaysDailyAccounting() {
+      this.getTodaysDailyAccounting().then(accountings => {
+        if (accountings.length > 0) {
+          this.dailyAccountings = accountings;
+          this.isAccomplished = true;
+        } else {
+          this.isAccomplished = false;
+        }
+        this.isLoading = false;
+      })
     }
 
     private async sendNewDailyAccounting() {
       const newDailyAccounting = {
-        date: this.dateInput,
+        date: new Date(this.dateInput).getTime(),
         totalSales: this.totalSalesInput,
         onlineSales: this.onlineSalesInput,
         physicalSales: this.totalSalesInput - this.onlineSalesInput,
