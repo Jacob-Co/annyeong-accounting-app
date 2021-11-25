@@ -26,10 +26,14 @@
               <li class="list-group-item">Remarks: {{dailyAccounting.remarks}}</li>
             </ul>
           </div>
+          <button 
+            class="bg-danger btn text-white" 
+            @click="deleteForm($event, dailyAccounting._id)"
+          >
+            Delete
+          </button>
         </li>
       </ul>
-
-      <button class="bg-danger btn text-white">Delete</button>
     </div>
 
     <form v-show="!isLoading && !isAccomplished">
@@ -269,5 +273,9 @@
       await this.setTodaysDailyAccounting();
     }
 
+    public async deleteForm(e: Event, key: string) {
+      e.preventDefault()
+      console.log(key);
+    }
   }
 </script>
