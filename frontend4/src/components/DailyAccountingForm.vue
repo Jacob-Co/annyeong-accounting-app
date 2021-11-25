@@ -265,9 +265,8 @@
         this.isLoading = false;
         return;
       }
-      alert('sucess');
-      console.log(result)
       this.isLoading = false;
+      await this.setTodaysDailyAccounting();
     }
 
   }
