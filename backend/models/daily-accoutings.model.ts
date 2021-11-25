@@ -21,8 +21,10 @@ import { Credit } from "./credits.model";
 export class DailyAccounting {
   constructor(
     public businessEntity: ObjectId | BusinessEntity,
-    public expenses: ObjectId[] | Expense[],
+    // public expenses: ObjectId[] | Expense[],
     // public credits: ObjectId[] | Credit,
+    public expenses: number,
+    public credits: number,
     public date: number,
     public totalSales: number,
     public onlineSales: number,

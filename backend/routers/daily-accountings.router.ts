@@ -28,10 +28,10 @@ dailyAccountingRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newDailyAccounting = req.body.newDailyAccounting as DailyAccounting;
     newDailyAccounting.businessEntity = new ObjectId(req.body.token.businessEntity);
-    for(let i = 0; i < newDailyAccounting.expenses.length; i++) {
-      const expensesID = new ObjectId(newDailyAccounting.expenses[i].toString());
-      newDailyAccounting.expenses[i] = expensesID;
-    }
+    // for(let i = 0; i < newDailyAccounting.expenses.length; i++) {
+    //   const expensesID = new ObjectId(newDailyAccounting.expenses[i].toString());
+    //   newDailyAccounting.expenses[i] = expensesID;
+    // }
     const result = await dailyAccountingsCollection.insertOne(newDailyAccounting);
     result.acknowledged
       ? res.status(200).send('Successfully added new daily accounting')
