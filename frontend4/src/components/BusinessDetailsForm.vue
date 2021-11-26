@@ -1,5 +1,7 @@
 <template>
   <form>
+    <h3>{{name}}</h3>
+
     <div>
       <label for="capitalInput">Current Capital</label>
       <input 
@@ -57,10 +59,11 @@
     public capitalPercentInput = 'Loading';
     public incomePercentInput = 'Loading';
     public incomeInput = 'Loading';
+    public name = "Loading";
 
     beforeCreate() {
       getBusinessDetails().then(businessDetails => {
-        console.log(businessDetails)
+        this.name = businessDetails.name;
         this.capitalInput = businessDetails.capital.toString();
         this.incomeInput = businessDetails.income.toString();
         this.capitalPercentInput = businessDetails.capitalPercent.toString();
