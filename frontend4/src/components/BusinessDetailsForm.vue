@@ -11,6 +11,16 @@
     </div>
 
     <div>
+      <label for="capitalInput">Current Income</label>
+      <input 
+        type="string"
+        v-model="incomeInput"
+        id="incomeInput"
+        disabled
+      />
+    </div>
+
+    <div>
       <label for="capitalPercentInput">Capital Percent</label>
       <input 
         type="string"
@@ -46,11 +56,13 @@
     public capitalInput = 'Loading';
     public capitalPercentInput = 'Loading';
     public incomePercentInput = 'Loading';
+    public incomeInput = 'Loading';
 
     beforeCreate() {
       getBusinessDetails().then(businessDetails => {
         console.log(businessDetails)
         this.capitalInput = businessDetails.capital.toString();
+        this.incomeInput = businessDetails.income.toString();
         this.capitalPercentInput = businessDetails.capitalPercent.toString();
         this.incomePercentInput = businessDetails.incomePercent.toString();
       })

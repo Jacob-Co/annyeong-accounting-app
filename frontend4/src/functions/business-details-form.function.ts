@@ -1,6 +1,5 @@
 import { backendString } from "@/utils/server.util";
 import { getBearerToken } from "@/utils/authorization.util";
-import { getBusinessEntityRes } from '../../../types/api-response-types';
 
 export async function getBusinessDetails() {
   const bearerToken = getBearerToken();
@@ -10,6 +9,6 @@ export async function getBusinessDetails() {
       'Authorization': bearerToken
     }
   });
-  const businessDetails = await response.json() as getBusinessEntityRes;
+  const businessDetails = await response.json();
   return businessDetails;
 }

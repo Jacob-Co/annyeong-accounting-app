@@ -3,7 +3,6 @@ import { ObjectId } from 'mongodb';
 import { businessEntityCollection } from '../services/database.service';
 import { BusinessEntity } from '../models/business-entities.model';
 import { verifyUserToken } from '../services/auth.service';
-import { getBusinessEntityRes } from '../../types/api-response-types';
 
 export const businessEntityRouter = express.Router();
 businessEntityRouter.use(express.json());
@@ -18,8 +17,9 @@ businessEntityRouter.get('/', verifyUserToken, async (req: Request, res: Respons
         name: result!.name,
         capital: result!.capital,
         capitalPercent: result!.capitalPercent,
-        incomePercent: result!.incomePercent
-      } as getBusinessEntityRes
+        incomePercent: result!.incomePercent,
+        income: result!.income
+      }; 
 
       res.status(200).send(JSON.stringify(response));
     } else {
