@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "test": "echo hello",
+    "set-heroku-remote": "heroku git:remote --remote heroku-backend -a accounting-app-backend-prod && heroku git:remote --remote heroku-frontend -a accounting-app-prod-frontend",
+    "deploy-backend": "git subtree push --prefix backend heroku-backend master",
+    "add-backend-build-packs": "heroku buildpacks:add heroku/nodejs --remote heroku-backend",
+    "deploy-frontend": "git subtree push --prefix frontend4 heroku-frontend master",
+    "add-frontend-build-packs": "heroku buildpacks:add heroku/nodejs --remote heroku-frontend && heroku buildpacks:add https://github.com/heroku/heroku-buildpack-static --remote heroku-frontend"
+  }
+}
