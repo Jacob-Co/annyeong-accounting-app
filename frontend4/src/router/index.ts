@@ -8,8 +8,8 @@ import  View from '../views/View.vue';
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'View',
+    component: View 
   },
   {
     path: '/about',
@@ -34,11 +34,6 @@ const routes: Array<RouteRecordRaw> = [
     name: 'DailyAccounting',
     component: DailyAccounting
   },
-  {
-    path: '/view',
-    name: 'View',
-    component: View
-  }
 ]
 
 const router = createRouter({
