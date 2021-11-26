@@ -1,9 +1,9 @@
 <template>
   <div id="nav">
-    <router-link to="/">Add</router-link> |
-    <router-link to="/businessDetails">Business Details</router-link> |
-    <router-link to="/login">Login</router-link> |
-    <LogoutButton/> 
+    <router-link to="/" v-show="isAuthenticated">Add</router-link> |
+    <router-link to="/businessDetails" v-show="isAuthenticated">Business Details</router-link> |
+    <router-link to="/login" v-show="!isAuthenticated">Login</router-link> |
+    <LogoutButton v-show="isAuthenticated"/> 
   </div>
   <router-view/>
 </template>
@@ -11,10 +11,16 @@
 <script lang="ts">
   import { Vue, Options } from 'vue-class-component';
   import LogoutButton from './components/LogoutButton.vue';
+  import { isAuthenticated } from './utils/authorization.util';
 
   @Options({
     components: {
       LogoutButton
+    },
+    computed: {
+      isAuthenticated() {
+        return isAuthenticated();
+      }
     }
   })
   export default class App extends Vue {} 
