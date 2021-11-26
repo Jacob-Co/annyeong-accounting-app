@@ -1,8 +1,8 @@
 <template>
   <div id="nav">
-    <router-link to="/" v-show="isLoggedIn">Add</router-link> |
-    <router-link to="/businessDetails" v-show="isLoggedIn">Business Details</router-link> |
-    <router-link to="/login" v-show="!isLoggedIn">Login</router-link> |
+    <router-link to="/" v-show="isLoggedIn"><button class="btn bg-success text-white">Add</button></router-link>
+    <router-link to="/businessDetails" v-show="isLoggedIn"><button class="btn bg-info text-white">Business Details</button></router-link>
+    <router-link to="/login" v-show="!isLoggedIn">Login</router-link> 
     <LogoutButton v-show="isLoggedIn"/> 
   </div>
   <router-view/>
