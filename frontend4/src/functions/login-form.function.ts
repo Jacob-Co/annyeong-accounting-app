@@ -9,7 +9,6 @@ type loginCredentials = {
 
 export class Login {
   public static async impl(credentails: loginCredentials) {
-    console.log(JSON.stringify(credentails)) 
     const result = await fetch(`${backendString}/api/users/login`, {
       method: 'POST',
       headers: {
