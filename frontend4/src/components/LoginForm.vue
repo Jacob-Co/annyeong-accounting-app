@@ -15,6 +15,7 @@
 <script lang="ts">
   import { Options, Vue } from 'vue-class-component';
   import { Login } from '../functions/login-form.function';
+
   @Options({})
   export default class LoginForm extends Vue {
     public username = '';
