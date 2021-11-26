@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "start": "node server.js"
+    "start": "node server.js" 
   },
   "dependencies": {
     "@popperjs/core": "^2.10.2",
