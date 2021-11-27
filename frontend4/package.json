@@ -5,8 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
-    "postinstall": "npm run build"
+    "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
     "@popperjs/core": "^2.10.2",
