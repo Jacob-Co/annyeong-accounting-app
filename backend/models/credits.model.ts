@@ -18,6 +18,8 @@ export class Credit {
     public date: number,
     public amount: number,
     public remarks: string,
+    public isPaid: boolean,
+    public datePaid?: number,
     public id?: ObjectId,
   ) {}
 }
