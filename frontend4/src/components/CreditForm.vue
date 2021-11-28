@@ -170,7 +170,8 @@
         date: new Date(this.dateInput).getTime(),
         creditor: this.creditorInput,
         amount: this.getAmount(),
-        remarks: this.remarksInput
+        remarks: this.remarksInput,
+        isPaid: false
       };
       const result = await fetch(`${backendString}/api/credits/`, {
         method: 'POST',
