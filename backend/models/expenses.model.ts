@@ -20,6 +20,7 @@ export class Expense {
     public date: number,
     public price: number,
     public remarks: string,
+    public isDeductingFromDaily?: boolean,
     public id?: ObjectId,
   ) {}
 }

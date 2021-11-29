@@ -154,7 +154,7 @@
         res.forEach(stock => {
           this.totalStocks += stock['price'];
           if (stock['isDeductingFromDaily']) {
-            this.totalDeductedStock += stock ['price'];
+            this.totalDeductedStock += stock['price'];
           }
         });
         store.commit('setStockTotal', this.totalDeductedStock)

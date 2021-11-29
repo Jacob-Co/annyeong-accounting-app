@@ -57,13 +57,25 @@
           type="submit" 
           class="btn-primary btn align-self-start"
           @click="submit"
+          style="marginRight: 1rem"
         >
           Add
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-warning"
+          @click="deductFromDaily"
+        >
+          Deduct From Daily
         </button>
       </div>
     </form>
 
-    <h4>Total: {{totalExpenses * -1}}</h4>
+    <h4>Total: {{totalExpenses}}</h4>
+    <h4 class="text-danger">
+      Deducted from daily: {{totalDeductedExpenses}}
+    </h4>
     <ul class="list-group">
       <li
         v-for="expense in expenses"
@@ -72,7 +84,15 @@
         aria-label="test"
       >
         <details>
-          <summary>{{expense.expenseType}}: {{expense.price * -1}}</summary>
+          <summary>
+            {{expense.expenseType}}: {{expense.price}}
+            <span 
+              v-if="expense.isDeductingFromDaily"
+              class="text-danger"
+            >
+              Deducting from daily
+            </span>
+          </summary>
           {{expense.remarks || 'No remarks'}}
         </details>
       </li>
@@ -97,19 +117,41 @@
     public isLoading = false;
     public expenses = [];
     public totalExpenses = 0;
+    public totalDeductedExpenses = 0;
 
     mounted() {
      this.getExpenseTypes().then(res => this.expenseTypes = res);
      this.setTodayExpenses();
     }
+    
+    public async deductFromDaily(e: Event) {
+      e.preventDefault();
+      this.isLoading = true;
+      const result = await this.sendNewExpense(true);
+      if (result.status !== 200) {
+        alert('Error');
+        this.isLoading = false;
+        return;
+      }
+      this.setTodayExpenses();
+      this.isLoading = false;
+      this.resetInputs(); 
+    }
 
     private async setTodayExpenses() {
       this.getTodaysExpenses().then((res) => {
         this.expenses = res;
-        this.totalExpenses = this.expenses.reduce((val, newVal) => {
-          return val + newVal['price'];
-        }, 0);
-        store.commit('setExpenseTotal', this.totalExpenses);
+        this.totalExpenses = 0;
+        this.totalDeductedExpenses = 0;
+        console.log(res);
+        //@ts-ignore
+        res.forEach(expense => {
+          this.totalExpenses += expense['price']
+          if (expense['isDeductingFromDaily']) {
+            this.totalDeductedExpenses += expense['price'];
+          }
+        })
+        store.commit('setExpenseTotal', this.totalDeductedExpenses);
       });
     }
 
@@ -140,12 +182,13 @@
       return await result.json();
     }
 
-    private async sendNewExpense() {
+    private async sendNewExpense(isDeducting: boolean = false) {
       const body = {
         date: new Date(this.dateInput).getTime(),
         expenseType: this.expenseTypeInput,
         price: this.priceInput * -1,
-        remarks: this.remarksInput
+        remarks: this.remarksInput,
+        isDeductingFromDaily: isDeducting
       };
       const result = await fetch(`${backendString}/api/expenses/`, {
         method: 'POST',
