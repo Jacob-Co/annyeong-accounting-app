@@ -4,6 +4,7 @@ export default createStore({
   state: {
     expenseTotal: 0,
     creditTotal: 0,
+    stockTotal: 0,
     isLoggedIn: false
   },
   mutations: {
@@ -15,6 +16,9 @@ export default createStore({
     },
     setLogIn(state, newLogInState) {
       state.isLoggedIn = newLogInState
+    },
+    setStockTotal(state, newStockTotal) {
+      state.stockTotal = newStockTotal;
     }
   },
   actions: {

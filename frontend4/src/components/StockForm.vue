@@ -56,13 +56,23 @@
           type="submit" 
           class="btn-primary btn align-self-start"
           @click="submit"
+          style="marginRight: 1rem"
         >
-          Add
+          Add Only
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-warning"
+          @click="deductFromDaily"
+        >
+          Deduct From Daily
         </button>
       </div>
     </form>
 
     <h4>Total: {{ totalStocks }}</h4>
+    <h4 class="text-danger">Deducted from daily: {{ totalDeductedStock }}</h4>
     <ul class="list-group">
       <li
         v-for="stock in stocks"
@@ -71,7 +81,15 @@
         aria-label="test"
       >
         <details>
-          <summary>{{stock.distributor}}: {{stock.price}}</summary>
+          <summary>
+            {{stock.distributor}}: {{stock.price}}
+            <span 
+              class="text-danger" 
+              v-if="stock.isDeductingFromDaily"
+            >
+              Deducted from daily
+            </span>
+          </summary>
           {{stock.remarks || 'No remarks'}}
         </details>
       </li>
@@ -84,6 +102,7 @@
   import { backendString } from '../utils/server.util';
   import { getBearerToken } from '../utils/authorization.util';
   import { getDateTodayInYMD } from '../utils/date.util';
+  import store from '../store/index';
 
   @Options({})
   export default class StockForm extends Vue {
@@ -95,10 +114,25 @@
     public isLoading = false;
     public stocks = [];
     public totalStocks = 0;
+    public totalDeductedStock = 0;
 
     mounted() {
      this.getDistributors().then(res => this.distributors = res);
      this.setTodaysStocks();
+    }
+
+    public async deductFromDaily(e: Event) {
+      e.preventDefault();
+      this.isLoading = true;
+      const result = await this.sendNewStock(true);
+      if (result.status !== 200) {
+        alert('Error');
+        this.isLoading = false;
+        return;
+      }
+      this.setTodaysStocks();
+      this.isLoading = false;
+      this.resetInputs(); 
     }
 
     private async getDistributors() {
@@ -114,9 +148,16 @@
     private async setTodaysStocks() {
       this.getTodaysStocks().then(res => {
         this.stocks = res;
-        this.totalStocks = this.stocks.reduce((val, curVal) => {
-          return val + curVal['price']
-        }, 0);
+        this.totalStocks = 0;
+        this.totalDeductedStock = 0;
+        // @ts-ignore
+        res.forEach(stock => {
+          this.totalStocks += stock['price'];
+          if (stock['isDeductingFromDaily']) {
+            this.totalDeductedStock += stock ['price'];
+          }
+        });
+        store.commit('setStockTotal', this.totalDeductedStock)
       });
     }
 
@@ -136,12 +177,13 @@
 
       return await result.json();
     }
-    private async sendNewStock() {
+    private async sendNewStock(isDeducting: boolean = false) {
       const body = {
         date: new Date(this.dateInput).getTime(),
         distributor: this.distributorInput,
         price: this.priceInput * -1,
-        remarks: this.remarksInput
+        remarks: this.remarksInput,
+        isDeductingFromDaily: isDeducting
       };
       const result = await fetch(`${backendString}/api/stocks/`, {
         method: 'POST',
