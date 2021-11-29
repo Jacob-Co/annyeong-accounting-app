@@ -98,7 +98,7 @@
 
     mounted() {
      this.getDistributors().then(res => this.distributors = res);
-     this.setTodaysCredits();
+     this.setTodaysStocks();
     }
 
     private async getDistributors() {
@@ -111,7 +111,7 @@
       return await result.json();
     }
 
-    private async setTodaysCredits() {
+    private async setTodaysStocks() {
       this.getTodaysStocks().then(res => {
         this.stocks = res;
         this.totalStocks = this.stocks.reduce((val, curVal) => {
@@ -169,7 +169,7 @@
         this.isLoading = false;
         return;
       }
-      this.getTodaysStocks();
+      this.setTodaysStocks();
       this.isLoading = false;
       this.resetInputs(); 
     }
