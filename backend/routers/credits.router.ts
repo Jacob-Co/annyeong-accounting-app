@@ -74,3 +74,21 @@ creditsRouter.post('/', async (req: Request, res: Response) => {
     await session.endSession();
   }
 });
+
+// DELETE
+creditsRouter.delete('/:id', async (req: Request, res: Response) => {
+  try {
+    const creditId = new ObjectId(req.params.id);
+    const businessEntityId = new ObjectId(req.body.token.id);
+
+    const result = await creditsCollection.deleteOne({
+      _id: creditId,
+      businessEntity: businessEntityId 
+    });
+
+    res.status(200).send('Successfully deleted credit');
+  } catch (e: any) {
+    console.error(e.message);
+    res.status(500).send('Error in deleting credit');
+  }
+});

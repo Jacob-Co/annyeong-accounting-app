@@ -26,13 +26,13 @@
             :key="creditor._id"
             :value="creditor._id.toString()"
           >
-            {{creditor.wholeName}}
+            {{creditor.wholeName}} 
           </option>
         </select>
 
         <div class="input-group">
           <span class="input-group-text">Price</span>
-          <span 
+          <!-- <span 
             class="input-group-text bg-danger" 
             v-show="isDebt"
             @click="toggleDebt"
@@ -45,7 +45,7 @@
             @click="toggleDebt"
           >
             +
-          </span>
+          </span> -->
           <input 
             class="form-control" 
             type="number" 
@@ -85,7 +85,15 @@
         aria-label="test"
       >
         <details>
-          <summary>{{credit.creditor}}: {{credit.amount}}</summary>
+          <summary>
+            {{credit.creditor}}: {{credit.amount}}
+            <span v-if="credit.isPaid" class="text-success">
+              paid
+            </span>
+            <span v-if="!credit.isPaid" class="text-danger">
+              not paid
+            </span>
+          </summary>
           {{credit.remarks || 'No remarks'}}
         </details>
       </li>
@@ -160,7 +168,8 @@
     }
 
     private getAmount() {
-      return this.isDebt
+      // return this.isDebt
+      return true
         ? this.priceInput * -1
         : this.priceInput
     }
