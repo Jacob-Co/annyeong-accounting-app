@@ -326,7 +326,29 @@
 
     public async deleteForm(e: Event, key: string) {
       e.preventDefault()
-      console.log(key);
+      this.isLoading = true;
+      const res = await this.deleteDailyAccounting(key);
+
+      if (res.status !== 200) {
+        alert('Error deleting');
+        this.isLoading = false;
+        return;
+      }
+
+      this.isLoading = false;
+      this.isAccomplished = false;
+      return;
+    }
+
+    private async deleteDailyAccounting(id: string){
+      const result = await fetch(`${backendString}/api/dailyAccountings/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': getBearerToken()
+        }
+      })
+
+      return await result;
     }
   }
 </script>

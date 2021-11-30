@@ -109,3 +109,44 @@ dailyAccountingRouter.delete('/:id', async(req: Request, res: Response) => {
     session.endSession();
   }
 })
+
+// DELETE
+dailyAccountingRouter.delete('/:id', async (req: Request, res: Response) => {
+  const session = mongoDBClient.startSession();
+  try {
+    const dailyAccountingId = new ObjectId(req.params.id);
+    const businessEntityId =new ObjectId(req.body.token.businessEntity);
+    const findResult = await dailyAccountingsCollection.findOne({ _id: dailyAccountingId });
+    if (findResult === null) {
+      res.status(400).send('No id was found');
+      return;
+    }
+
+    await session.withTransaction(async () => {
+      await dailyAccountingsCollection.deleteOne({ _id: businessEntityId });
+
+      const filter = {
+        _id: businessEntityId
+      }
+
+      const { capitalPercent, incomePercent } = await businessEntityCollection
+        .findOne(filter) as BusinessEntity;
+      
+      const update = {
+        $inc: {
+          income: findResult.totalSales * incomePercent / -100,
+          capital: findResult.totalSales * capitalPercent / -100
+        }
+      }
+
+      await businessEntityCollection.updateOne(filter, update);
+    })
+    
+    res.status(200).send('Sucessfully deleted');
+  } catch (e: any) {
+    console.error(e.message);
+    res.status(500).send('Error in deleting daily accounting');
+  } finally {
+    session.endSession();
+  }
+})
