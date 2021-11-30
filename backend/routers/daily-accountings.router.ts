@@ -78,6 +78,11 @@ dailyAccountingRouter.delete('/:id', async(req: Request, res: Response) => {
       businessEntity: businessEntityId
     });
 
+    if (dailyAccounting === null) {
+      res.status(400).send('No daily accounting found');
+      return;
+    }
+
     await session.withTransaction(async () => {
       await dailyAccountingsCollection.deleteOne({
         _id: dailyAccountingId,
