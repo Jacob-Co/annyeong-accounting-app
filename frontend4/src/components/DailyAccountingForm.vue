@@ -75,7 +75,7 @@
         <input
           class="form-control"
           type="number"
-          v-model="physicalSalesInput"
+          v-model="computePhysicalSalesInput"
           disabled
           placeholder="0"
         />
@@ -83,15 +83,26 @@
       </div>
 
       <div class="input-group">
-        <span class="input-group-text">Expenses</span>
+        <span class="input-group-text">Total Deduction</span>
         <input
           class="form-control"
           type="number"
           disabled
-          v-model="expenseTotal"
+          v-model="totalDeductions"
           placeholder="0"
         />
         <span class="input-group-text">php</span>
+      </div>
+
+      <div class="input-group">
+        <span class="input-group-text bg-warning">Net Cash</span>
+        <input
+          class="form-control"
+          type="number"
+          disabled
+          placeholder="0"
+         />
+         <span class="input-group-text">php</span>
       </div>
 
       <div class="input-group">
@@ -170,22 +181,23 @@
 
   @Options({
     computed: {
-      expenseTotal() {
-        this._expenseTotal = store.state.expenseTotal
-        return store.state.expenseTotal
+      computePhysicalSalesInput() {
+        this.physicalSalesInput = this.totalSalesInput - this.onlineSalesInput;
+        return this.physicalSalesInput
       },
-      creditTotal() {
-        this._creditTotal = store.state.creditTotal
-        return store.state.creditTotal
+      computeTotalDeductions() {
+        this.totalDeductionsInput = store.state.expenseTotal + store.state.stockTotal
+        return this.totalDeductionsInput;
       },
-      physicalSalesInput() {
-        return this.totalSalesInput - this.onlineSalesInput;
+      netCash() {
+        return 
       },
       netSales() {
-        return this.totalSalesInput + this._expenseTotal 
+        
+        return this.totalSalesInput + this.dTotalDeductions
       },
       takeHome() {
-        return this.totalSalesInput + this._expenseTotal + this._creditTotal
+        return this.totalSalesInput + this.dTotalDeductions + this.dCreditTotal
       }
     }
   })
@@ -195,8 +207,12 @@
     public onlineSalesInput = NaN;
     public cashInRegisterInput = NaN;
     public remarksInput = "";
-    private _expenseTotal = 0;
-    private _creditTotal = 0;
+
+    public physicalSalesInput = 0;
+    public totalDeductionsInput = 0;
+    public expenseTotal = 0;
+    public stockTotal = 0
+    private dCreditTotal = 0;
     public isLoading = true;
     public isAccomplished = false;
     public dailyAccountings = [];
@@ -240,10 +256,10 @@
         totalSales: this.totalSalesInput,
         onlineSales: this.onlineSalesInput,
         physicalSales: this.totalSalesInput - this.onlineSalesInput,
-        expenses: this._expenseTotal,
-        netSales: this.totalSalesInput + this._expenseTotal,
-        credits: this._creditTotal,
-        takeHomeCash: this.totalSalesInput + this._expenseTotal + this._creditTotal,
+        // expenses: this.dExpenseTotal,
+        // netSales: this.totalSalesInput + this.dExpenseTotal,
+        credits: this.dCreditTotal,
+        // takeHomeCash: this.totalSalesInput + this.dExpenseTotal + this.dCreditTotal,
         cashInRegister: this.cashInRegisterInput,
         remarks: this.remarksInput
       }

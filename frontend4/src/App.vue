@@ -1,4 +1,6 @@
 <template>
+<div class="d-flex flex-column align-items-center">
+<div id="main">
   <div id="nav">
     <router-link to="/" v-show="isLoggedIn"><button class="btn bg-success text-white">Add</button></router-link>
     <router-link to="/businessDetails" v-show="isLoggedIn"><button class="btn bg-info text-white">Business Details</button></router-link>
@@ -6,6 +8,8 @@
     <LogoutButton v-show="isLoggedIn"/> 
   </div>
   <router-view/>
+</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -51,5 +55,9 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+#main {
+  max-width: 700px;
 }
 </style>
