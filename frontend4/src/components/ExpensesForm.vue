@@ -127,6 +127,11 @@
     public totalDeductedExpenses = 0;
 
     mounted() {
+      this.isLoading = true;
+      this.setUp().then(() => this.isLoading = false);
+    }
+
+    private async setUp() {
      this.getExpenseTypes().then(res => this.expenseTypes = res);
      this.setTodayExpenses();
     }

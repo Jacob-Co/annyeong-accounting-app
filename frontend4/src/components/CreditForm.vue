@@ -127,9 +127,13 @@
     public isDebt = true;
 
     mounted() {
-     this.getCreditors().then(res => this.creditors = res);
-    //  this.getTodaysCredits().then(res => console.log(res));
-    this.setTodaysCredits();
+      this.isLoading = true;
+      this.setUp().then(() => this.isLoading = false);
+    }
+
+    private async setUp() {
+      this.getCreditors().then(res => this.creditors = res);
+      this.setTodaysCredits();
     }
 
     public toggleDebt() {

@@ -123,8 +123,13 @@
     public totalDeductedStock = 0;
 
     mounted() {
-     this.getDistributors().then(res => this.distributors = res);
-     this.setTodaysStocks();
+      this.isLoading = true;
+      this.setUp().then(() => this.isLoading = false);
+    }
+
+    private async setUp() {
+      this.getDistributors().then(res => this.distributors = res);
+      this.setTodaysStocks();
     }
 
     public async deductFromDaily(e: Event) {

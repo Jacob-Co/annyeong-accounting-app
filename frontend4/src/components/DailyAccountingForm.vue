@@ -240,7 +240,8 @@
     public isAccomplished = false;
 
     mounted() {
-      this.setTodaysDailyAccounting();
+      this.isLoading = true;
+      this.setTodaysDailyAccounting().then(() => this.isLoading = false);
     }
 
     private async getTodaysDailyAccounting() {
