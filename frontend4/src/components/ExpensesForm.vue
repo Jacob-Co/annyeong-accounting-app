@@ -92,8 +92,15 @@
             >
               Deducting from daily
             </span>
+          <button
+            class="btn text-white bg-danger d-inline"
+            @click="deleteExpense($event, expense._id)"
+          >
+          X
+          </button>
           </summary>
           {{expense.remarks || 'No remarks'}}
+          
         </details>
       </li>
     </ul>
@@ -221,6 +228,32 @@
       this.resetInputs(); 
     }
 
+    private async sendDeleteExpense(id: string) {
+      const result = await fetch(`${backendString}/api/expenses/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': getBearerToken()
+        }
+      });
+
+      return result;
+    }
+
+    public async deleteExpense(e: Event, key: string) {
+      e.preventDefault();
+      this.isLoading = true;
+      const result = await this.sendDeleteExpense(key);
+
+      if (result.status !== 200) {
+        alert('Error in deleting expense');
+        this.isLoading = false;
+        return;
+      }
+
+      this.isLoading = false;
+      await this.setTodayExpenses();
+      return;
+    }
   }
 </script>
 

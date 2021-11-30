@@ -6,6 +6,7 @@ import { verifyUserToken } from '../services/auth.service';
 import { businessEntityCollection } from '../services/database.service';
 import { mongoDBClient } from '../services/database.service';
 import { expenseTypesCollection } from '../services/database.service';
+import { BusinessEntity } from '../models/business-entities.model';
 
 export const expensesRouter = express.Router();
 expensesRouter.use(express.json());
@@ -83,6 +84,53 @@ expensesRouter.post('/', async (req: Request, res: Response) => {
   } catch(err: any) {
     console.error(err.message);
     res.status(500).send(JSON.stringify('Error increating expense'));
+  } finally {
+    session.endSession();
+  }
+})
+
+// DELETE
+expensesRouter.delete('/:id', async (req: Request, res: Response) => {
+  const session = mongoDBClient.startSession();
+  try {
+    const expensesId = new ObjectId(req.params.id);
+    const businessEntityId = new ObjectId(req.body.token.businessEntity);
+    const findResult = await expensesCollection.findOne({
+      _id: expensesId,
+      businessEntity: businessEntityId
+    });
+
+    if (findResult === null) {
+      res.status(400).send('No expense found');
+      return;
+    }
+
+    await session.withTransaction(async () => {
+      await expensesCollection.deleteOne({
+        _id: expensesId,
+        businessEntity: businessEntityId
+      });
+
+      const filter = {
+        _id: businessEntityId
+      }
+
+      const { incomePercent } = await businessEntityCollection
+        .findOne(filter) as BusinessEntity;
+      
+      const update = {
+        $inc: {
+          income: findResult.price * -1
+        }
+      }
+
+      await businessEntityCollection.updateOne(filter, update);
+    })
+
+    res.status(200).send('Successfully delete expense');
+  } catch (e: any) {
+    console.error(e.message);
+    res.status(500).send('Error deleting expense');
   } finally {
     session.endSession();
   }
