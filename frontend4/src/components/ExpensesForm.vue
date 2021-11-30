@@ -21,7 +21,7 @@
           aria-label="Default select example"
           v-model="expenseTypeInput"
         >
-          <option selected disabled value="">Expnese Type</option>
+          <option selected disabled value="">Expense Type</option>
           <option 
             v-for="expenseType in expenseTypes" 
             :key="expenseType._id"
