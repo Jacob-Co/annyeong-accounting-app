@@ -1,4 +1,11 @@
 <template>
+<div>
+  <input 
+    type="date"
+    v-model="dateInput"
+    @change="updateDateStore"
+  />
+
   <div class="accordion" id="accordionPanelsStayOpenExample">
     <div class="accordion-item">
       <h2 class="accordion-header" id="panelsStayOpen-headingOne">
@@ -62,6 +69,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -70,6 +78,8 @@
   import DailyAccountingForm from '../components/DailyAccountingForm.vue';
   import CreditForm from '../components/CreditForm.vue';
   import StockForm from '../components/StockForm.vue';
+  import store from '../store/index';
+  import { getDateTodayInYMD } from '../utils/date.util';
 
   @Options({
     components: {
@@ -79,5 +89,20 @@
       StockForm
     }
   })
-  export default class View extends Vue {}
+  export default class View extends Vue {
+    public dateInput = `1998-02-10`;
+    public dateUnix = 0; 
+
+    mounted() {
+      this.dateInput = getDateTodayInYMD();
+      this.dateUnix = new Date(this.dateInput).getTime();
+      store.commit('setDateUnix', this.dateUnix);
+    }
+
+    public updateDateStore(e: Event) {
+      // @ts-ignore
+      this.dateUnix = new Date(e.target.value).getTime();
+      store.commit('setDateUnix', this.dateUnix);
+    }
+  }
 </script>

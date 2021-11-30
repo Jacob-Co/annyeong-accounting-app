@@ -9,11 +9,11 @@
 
       <div class="d-flex flex-wrap" v-show="isLoading">
 
-        <input
+        <!-- <input
           type="date"
           v-model="dateInput"
           disabled
-        />
+        /> -->
 
         <select
           id="expenseTypeSelect"
@@ -195,7 +195,8 @@
 
     private async sendNewExpense(isDeducting: boolean = false) {
       const body = {
-        date: new Date(this.dateInput).getTime(),
+        // date: new Date(this.dateInput).getTime(),
+        date: store.state.dateUnix,
         expenseType: this.expenseTypeInput,
         price: this.priceInput * -1,
         remarks: this.remarksInput,

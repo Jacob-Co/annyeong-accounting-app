@@ -5,7 +5,8 @@ export default createStore({
     expenseTotal: 0,
     creditTotal: 0,
     stockTotal: 0,
-    isLoggedIn: false
+    isLoggedIn: false,
+    dateUnix: 0
   },
   mutations: {
     setExpenseTotal (state, newExpenseTotal) {
@@ -19,6 +20,9 @@ export default createStore({
     },
     setStockTotal(state, newStockTotal) {
       state.stockTotal = newStockTotal;
+    },
+    setDateUnix(state, newDateUnix) {
+      state.dateUnix = newDateUnix;
     }
   },
   actions: {

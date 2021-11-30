@@ -38,13 +38,13 @@
     </div>
 
     <form v-show="!isLoading && !isAccomplished">
-      <div>
+      <!-- <div>
         <input
           type="date"
           v-model="dateInput"
           disabled
         />
-      </div>
+      </div> -->
 
       <div class="input-group">
         <span class="input-group-text">Total</span>
@@ -275,7 +275,8 @@
 
     private async sendNewDailyAccounting() {
       const newDailyAccounting = {
-        date: new Date(this.dateInput).getTime(),
+        // date: new Date(this.dateInput).getTime(),
+        date: store.state.dateUnix,
         totalSales: this.totalSalesInput,
         onlineSales: this.onlineSalesInput,
         physicalSales: this.physicalSales,

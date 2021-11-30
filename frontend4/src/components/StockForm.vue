@@ -9,11 +9,11 @@
 
       <div class="d-flex flex-wrap" v-show="isLoading">
 
-        <input
+        <!-- <input
           type="date"
           v-model="dateInput"
           disabled
-        />
+        /> -->
 
         <select
           class="form-select d-block" 
@@ -190,7 +190,8 @@
     }
     private async sendNewStock(isDeducting: boolean = false) {
       const body = {
-        date: new Date(this.dateInput).getTime(),
+        // date: new Date(this.dateInput).getTime(),
+        date: store.state.dateUnix,
         distributor: this.distributorInput,
         price: this.priceInput * -1,
         remarks: this.remarksInput,

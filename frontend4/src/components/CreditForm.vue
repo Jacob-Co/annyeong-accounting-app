@@ -9,11 +9,11 @@
 
       <div class="d-flex flex-wrap" v-show="isLoading">
 
-        <input
+        <!-- <input
           type="date"
           v-model="dateInput"
           disabled
-        />
+        /> -->
 
         <select
           class="form-select d-block" 
@@ -186,7 +186,8 @@
 
     private async sendNewCredit() {
       const body = {
-        date: new Date(this.dateInput).getTime(),
+        // date: new Date(this.dateInput).getTime(),
+        date: store.state.dateUnix,
         creditor: this.creditorInput,
         amount: this.getAmount(),
         remarks: this.remarksInput,
