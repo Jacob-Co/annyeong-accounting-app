@@ -79,7 +79,7 @@ creditsRouter.post('/', async (req: Request, res: Response) => {
 creditsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const creditId = new ObjectId(req.params.id);
-    const businessEntityId = new ObjectId(req.body.token.id);
+    const businessEntityId = new ObjectId(req.body.token.businessEntity);
 
     const result = await creditsCollection.deleteOne({
       _id: creditId,

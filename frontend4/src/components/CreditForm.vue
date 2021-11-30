@@ -93,6 +93,12 @@
             <span v-if="!credit.isPaid" class="text-danger">
               not paid
             </span>
+            <button
+              class="btn text-white bg-danger d-inline"
+              @click="deleteCreditButton($event, credit._id)"
+            >
+            X
+            </button>
           </summary>
           {{credit.remarks || 'No remarks'}}
         </details>
@@ -213,6 +219,32 @@
       this.resetInputs(); 
     }
 
+    public async deleteCreditButton(e: Event, id: string) {
+      e.preventDefault();
+      this.isLoading = true;
+
+      const result = await this.deleteCredit(id);
+
+      if (result.status !== 200) {
+        alert('Error in deleting stock');
+        this.isLoading = false;
+        return;
+      }
+
+      await this.setTodaysCredits();
+      this.isLoading = false; 
+    }
+
+    private async deleteCredit(id: string) {
+      const result = await fetch(`${backendString}/api/credits/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': getBearerToken()
+        }
+      });
+
+      return result;
+    }
   }
 </script>
 
