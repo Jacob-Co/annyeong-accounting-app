@@ -150,7 +150,6 @@
         this.expenses = res;
         this.totalExpenses = 0;
         this.totalDeductedExpenses = 0;
-        console.log(res);
         //@ts-ignore
         res.forEach(expense => {
           this.totalExpenses += expense['price']
