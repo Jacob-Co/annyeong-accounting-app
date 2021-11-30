@@ -89,6 +89,12 @@
             >
               Deducted from daily
             </span>
+            <button
+              class="btn text-white bg-danger d-inline"
+              @click="deleteStockButton($event, stock._id)"
+            >
+            X
+            </button>
           </summary>
           {{stock.remarks || 'No remarks'}}
         </details>
@@ -216,6 +222,33 @@
       this.resetInputs(); 
     }
 
+    public async deleteStockButton(e: Event, key: string) {
+      e.preventDefault();
+      this.isLoading = true;
+
+      const result = await this.deleteStock(key);
+
+      if (result.status !== 200) {
+        alert('Error in deleting stock');
+        this.isLoading = false;
+        return;
+      }
+
+      this.isLoading = false;
+      await this.setTodaysStocks();
+      return;
+    }
+
+    private async deleteStock(id: string) {
+      const result = await fetch(`${backendString}/api/stocks/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': getBearerToken()
+        }
+      });
+
+      return result;
+    }
   }
 </script>
 
