@@ -18,10 +18,11 @@
               <li class="list-group-item">Total Sales: {{dailyAccounting.totalSales}}</li>
               <li class="list-group-item">Online Sales: {{dailyAccounting.onlineSales}}</li>
               <li class="list-group-item">Physical Sales: {{dailyAccounting.physicalSales}}</li>
-              <li class="list-group-item">Expenses: {{dailyAccounting.expenses}}</li>
+              <li class="list-group-item">Total Deductions: {{dailyAccounting.totalDeductions}}</li>
               <li class="list-group-item">Net Sales: {{dailyAccounting.netSales}}</li>
+              <li class="list-group-item">Net Cash: {{dailyAccounting.netCash}}</li>
               <li class="list-group-item">Credits: {{dailyAccounting.credits}}</li>
-              <li class="list-group-item">Take Home: {{dailyAccounting.takeHomeCash}}</li>
+              <li class="list-group-item">Take Home: {{dailyAccounting.takeHome}}</li>
               <li class="list-group-item">Cash in Register: {{dailyAccounting.cashInRegister}}</li>
               <li class="list-group-item">Remarks: {{dailyAccounting.remarks}}</li>
             </ul>
@@ -75,7 +76,7 @@
         <input
           class="form-control"
           type="number"
-          v-model="computePhysicalSalesInput"
+          v-model="computePhysicalSales"
           disabled
           placeholder="0"
         />
@@ -88,7 +89,19 @@
           class="form-control"
           type="number"
           disabled
-          v-model="totalDeductions"
+          v-model="computeTotalDeductions"
+          placeholder="0"
+        />
+        <span class="input-group-text">php</span>
+      </div>
+
+      <div class="input-group">
+        <span class="input-group-text bg-info">Net Sales</span>
+        <input
+          class="form-control"
+          type="number"
+          v-model="computeNetSales"
+          disabled
           placeholder="0"
         />
         <span class="input-group-text">php</span>
@@ -101,20 +114,9 @@
           type="number"
           disabled
           placeholder="0"
+          v-model="computeNetCash"
          />
          <span class="input-group-text">php</span>
-      </div>
-
-      <div class="input-group">
-        <span class="input-group-text bg-info">Net Sales</span>
-        <input
-          class="form-control"
-          type="number"
-          v-model="netSales"
-          disabled
-          placeholder="0"
-        />
-        <span class="input-group-text">php</span>
       </div>
 
       <div class="input-group">
@@ -123,7 +125,7 @@
           class="form-control"
           type="number"
           disabled
-          v-model="creditTotal"
+          v-model="computeCredits"
           placeholder="0"
         />
         <span class="input-group-text">php</span>
@@ -136,7 +138,7 @@
           type="number"
           disabled
           placeholder="0"
-          v-model="takeHome"
+          v-model="computeTakeHome"
         />
         <span class="input-group-text">php</span>
       </div>
@@ -181,23 +183,37 @@
 
   @Options({
     computed: {
-      computePhysicalSalesInput() {
-        this.physicalSalesInput = this.totalSalesInput - this.onlineSalesInput;
-        return this.physicalSalesInput
+      computePhysicalSales() {
+        this.physicalSales = this.totalSalesInput - this.onlineSalesInput;
+        return this.physicalSales;
       },
       computeTotalDeductions() {
-        this.totalDeductionsInput = store.state.expenseTotal + store.state.stockTotal
-        return this.totalDeductionsInput;
+        this.totalDeductions = store.state.expenseTotal + store.state.stockTotal
+        return this.totalDeductions;
       },
-      netCash() {
-        return 
+      computeExpensesDeductions() {
+        this.expensesDeductions = store.state.expenseTotal;
+        return this.expensesDeductions;
       },
-      netSales() {
-        
-        return this.totalSalesInput + this.dTotalDeductions
+      computeStocksDeductions() {
+        this.stocksDeductions = store.state.stockTotal;
+        return this.stocksDeductions;
       },
-      takeHome() {
-        return this.totalSalesInput + this.dTotalDeductions + this.dCreditTotal
+      computeNetCash() {
+        this.netCash = this.physicalSales + this.totalDeductions;
+        return this.netCash;
+      },
+      computeNetSales() {
+        this.netSales = this.totalSalesInput + this.totalDeductions;
+        return this.netSales;
+      },
+      computeCredits() {
+        this.credits = store.state.creditTotal;
+        return this.credits;
+      },
+      computeTakeHome() {
+        this.takeHome = this.netCash + this.credits;
+        return this.takeHome;
       }
     }
   })
@@ -208,14 +224,20 @@
     public cashInRegisterInput = NaN;
     public remarksInput = "";
 
-    public physicalSalesInput = 0;
-    public totalDeductionsInput = 0;
-    public expenseTotal = 0;
-    public stockTotal = 0
-    private dCreditTotal = 0;
+    public physicalSales = 0;
+    public totalDeductions = 0;
+    public expensesDeductions = 0;
+    public stocksDeductions = 0;
+
+    public netSales = 0;
+    public netCash = 0;
+
+    public credits = 0;
+    public takeHome = 0;
+
     public isLoading = true;
-    public isAccomplished = false;
     public dailyAccountings = [];
+    public isAccomplished = false;
 
     mounted() {
       this.setTodaysDailyAccounting();
@@ -255,11 +277,14 @@
         date: new Date(this.dateInput).getTime(),
         totalSales: this.totalSalesInput,
         onlineSales: this.onlineSalesInput,
-        physicalSales: this.totalSalesInput - this.onlineSalesInput,
-        // expenses: this.dExpenseTotal,
-        // netSales: this.totalSalesInput + this.dExpenseTotal,
-        credits: this.dCreditTotal,
-        // takeHomeCash: this.totalSalesInput + this.dExpenseTotal + this.dCreditTotal,
+        physicalSales: this.physicalSales,
+        totalDeductions: this.totalDeductions,
+        expensesDeductions: this.expensesDeductions,
+        stocksDeductions: this.stocksDeductions,
+        netSales: this.netSales,
+        netCash: this.netCash,
+        credits: this.credits,
+        takeHome: this.takeHome,
         cashInRegister: this.cashInRegisterInput,
         remarks: this.remarksInput
       }
@@ -278,6 +303,16 @@
 
     public async submit(e: Event) {
       e.preventDefault();
+
+      if (
+        isNaN(this.totalSalesInput) || 
+        isNaN(this.onlineSalesInput) ||
+        isNaN(this.cashInRegisterInput)
+      ) {
+        alert('Please fill out the daily form');
+        return;
+      }
+
       this.isLoading = true;
       const result = await this.sendNewDailyAccounting();
       if (result.status !== 200) {
