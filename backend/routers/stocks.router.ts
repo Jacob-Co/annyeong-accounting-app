@@ -8,6 +8,7 @@ import {
   businessEntityCollection,
   distributorsCollection 
 } from '../services/database.service';
+import { BusinessEntity } from '../models/business-entities.model';
 
 export const stocksRouter = express.Router();
 stocksRouter.use(express.json());
@@ -80,3 +81,50 @@ stocksRouter.post('/', async (req: Request, res: Response) => {
     session.endSession();
   }
 });
+
+// DELETE
+stocksRouter.delete('/:id', async (req: Request, res: Response) => {
+  const session = mongoDBClient.startSession();
+  try {
+    const stockId = new ObjectId(req.params.id);
+    const businessEntityId = new ObjectId(req.body.token.businessEntity);
+    const stock = await stocksCollection.findOne({
+      _id: stockId,
+      businessEntity: businessEntityId
+    });
+
+    if (stock === null) {
+      res.status(400).send('No stock found');
+      return;
+    }
+
+    await session.withTransaction(async () => {
+      await stocksCollection.deleteOne({
+        _id: stockId,
+        businessEntity: businessEntityId
+      });
+
+      const filter = {
+        _id: businessEntityId
+      }
+
+      const { capitalPercent } = await businessEntityCollection
+        .findOne(filter) as BusinessEntity;
+      
+      const update = {
+        $inc: {
+          capital: stock.price * -1
+        }
+      }
+
+      await businessEntityCollection.updateOne(filter, update);
+    });
+
+    res.status(200).send('Successfully deleted stock');
+  } catch (e: any) {
+    console.error(e.message);
+    res.status(500).send('Error in deleting stock');
+  } finally {
+    session.endSession();
+  }
+})
