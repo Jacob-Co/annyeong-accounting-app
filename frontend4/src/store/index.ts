@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import { getDateTodayInYMD } from '../utils/date.util';
 
 export default createStore({
   state: {
@@ -6,7 +7,7 @@ export default createStore({
     creditTotal: 0,
     stockTotal: 0,
     isLoggedIn: false,
-    dateUnix: 0
+    dateUnix: new Date(getDateTodayInYMD()).getTime() 
   },
   mutations: {
     setExpenseTotal (state, newExpenseTotal) {
