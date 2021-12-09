@@ -9,12 +9,6 @@
 
       <div class="d-flex flex-wrap" v-show="isLoading">
 
-        <!-- <input
-          type="date"
-          v-model="dateInput"
-          disabled
-        /> -->
-
         <select
           id="expenseTypeSelect"
           class="form-select d-block" 
@@ -113,11 +107,11 @@
   import { getBearerToken } from '../utils/authorization.util';
   import { getDateTodayInYMD } from '../utils/date.util';
   import store from '../store/index';
+  import { subscribe } from '../utils/pubSub.util';
 
   @Options({})
   export default class ExpenseForm extends Vue {
     public expenseTypes = [];
-    public dateInput = getDateTodayInYMD();
     public priceInput = NaN;
     public expenseTypeInput = '';
     public remarksInput = '';
@@ -125,15 +119,23 @@
     public expenses = [];
     public totalExpenses = 0;
     public totalDeductedExpenses = 0;
+    public changeDateEventListener?: any;
 
     mounted() {
-      this.isLoading = true;
-      this.setUp().then(() => this.isLoading = false);
+      this.getExpenseTypes().then(res => this.expenseTypes = res);
+      this.setUp();
+
+      this.changeDateEventListener = subscribe('changeDate', this.setUp)
+    }
+
+    beforeUnmount() {
+      this.changeDateEventListener();
     }
 
     private async setUp() {
-     this.getExpenseTypes().then(res => this.expenseTypes = res);
-     this.setTodayExpenses();
+      this.isLoading = true;
+      await this.setTodayExpenses();
+      this.isLoading = false;
     }
     
     public async deductFromDaily(e: Event) {
@@ -167,7 +169,7 @@
     }
 
     private async getTodaysExpenses() {
-      const unixStart = new Date(this.dateInput).getTime();
+      const unixStart = new Date(store.state.dateUnix).getTime();
       const unixOneDayInMS = 86400 * 1000;
       const unixEnd = unixStart + unixOneDayInMS - 1; 
 
@@ -195,7 +197,6 @@
 
     private async sendNewExpense(isDeducting: boolean = false) {
       const body = {
-        // date: new Date(this.dateInput).getTime(),
         date: store.state.dateUnix,
         expenseType: this.expenseTypeInput,
         price: this.priceInput * -1,
