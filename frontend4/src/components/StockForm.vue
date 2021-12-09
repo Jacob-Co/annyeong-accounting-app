@@ -109,11 +109,12 @@
   import { getBearerToken } from '../utils/authorization.util';
   import { getDateTodayInYMD } from '../utils/date.util';
   import store from '../store/index';
+  import { subscribe } from '../utils/pubSub.util';
 
   @Options({})
   export default class StockForm extends Vue {
     public distributors = [];
-    public dateInput = getDateTodayInYMD();
+    // public dateInput = getDateTodayInYMD();
     public priceInput = NaN;
     public distributorInput = '';
     public remarksInput = '';
@@ -121,15 +122,23 @@
     public stocks = [];
     public totalStocks = 0;
     public totalDeductedStock = 0;
+    public changeDateEventListener?: any;
 
     mounted() {
-      this.isLoading = true;
-      this.setUp().then(() => this.isLoading = false);
+      this.getDistributors().then(res => this.distributors = res);
+      this.setUp();
+
+      this.changeDateEventListener = subscribe('changeDate', this.setUp)
+    }
+
+    beforeUnmount() {
+      this.changeDateEventListener.unsubscribe();
     }
 
     private async setUp() {
-      this.getDistributors().then(res => this.distributors = res);
-      this.setTodaysStocks();
+      this.isLoading = true;
+      await this.setTodaysStocks();
+      this.isLoading = false;
     }
 
     public async deductFromDaily(e: Event) {
@@ -173,7 +182,7 @@
     }
 
     private async getTodaysStocks() {
-      const unixStart = new Date(this.dateInput).getTime();
+      const unixStart = new Date(store.state.dateUnix).getTime();
       const unixOneDayInMS = 86400 * 1000;
       const unixEnd = unixStart + unixOneDayInMS - 1; 
 
