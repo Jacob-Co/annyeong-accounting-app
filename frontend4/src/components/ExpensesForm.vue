@@ -129,7 +129,7 @@
     }
 
     beforeUnmount() {
-      this.changeDateEventListener();
+      this.changeDateEventListener.unsubscribe();
     }
 
     private async setUp() {

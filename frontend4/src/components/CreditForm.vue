@@ -9,12 +9,6 @@
 
       <div class="d-flex flex-wrap" v-show="isLoading">
 
-        <!-- <input
-          type="date"
-          v-model="dateInput"
-          disabled
-        /> -->
-
         <select
           class="form-select d-block" 
           aria-label="Default select example"
@@ -113,27 +107,35 @@
   import { getBearerToken } from '../utils/authorization.util';
   import { getDateTodayInYMD } from '../utils/date.util';
   import store from '../store/index';
+  import { subscribe } from '../utils/pubSub.util';
 
   @Options({})
   export default class CreditorForm extends Vue {
     public creditors = [];
     public credits = [];
     public totalCredits = 0;
-    public dateInput = getDateTodayInYMD();
     public priceInput = NaN;
     public creditorInput = '';
     public remarksInput = '';
     public isLoading = false;
     public isDebt = true;
+    public changeDateEventListener?: any;
 
     mounted() {
-      this.isLoading = true;
-      this.setUp().then(() => this.isLoading = false);
+      this.getCreditors().then(res => this.creditors = res);
+      this.setUp();
+
+      this.changeDateEventListener = subscribe('changeDate', this.setUp);
+    }
+
+    beforeUnmount() {
+      this.changeDateEventListener.unsubscribe();
     }
 
     private async setUp() {
-      this.getCreditors().then(res => this.creditors = res);
+      this.isLoading = true;
       this.setTodaysCredits();
+      this.isLoading = false;
     }
 
     public toggleDebt() {
@@ -151,7 +153,7 @@
     }
 
     private async getTodaysCredits() {
-      const unixStart = new Date(this.dateInput).getTime();
+      const unixStart = new Date(store.state.dateUnix).getTime();
       const unixOneDayInMS = 86400 * 1000;
       const unixEnd = unixStart + unixOneDayInMS - 1; 
 
@@ -186,7 +188,6 @@
 
     private async sendNewCredit() {
       const body = {
-        // date: new Date(this.dateInput).getTime(),
         date: store.state.dateUnix,
         creditor: this.creditorInput,
         amount: this.getAmount(),

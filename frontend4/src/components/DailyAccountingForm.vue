@@ -38,13 +38,6 @@
     </div>
 
     <form v-show="!isLoading && !isAccomplished">
-      <!-- <div>
-        <input
-          type="date"
-          v-model="dateInput"
-          disabled
-        />
-      </div> -->
 
       <div class="input-group">
         <span class="input-group-text">Total</span>
@@ -180,6 +173,7 @@
   import { backendString } from '../utils/server.util';
   import { getBearerToken } from '../utils/authorization.util';
   import { getDateTodayInYMD } from '../utils/date.util';
+  import { subscribe } from '../utils/pubSub.util';
 
   @Options({
     computed: {
@@ -214,11 +208,10 @@
       computeTakeHome() {
         this.takeHome = this.netCash + this.credits;
         return this.takeHome;
-      }
+      },
     }
   })
   export default class DailyAccountingForm extends Vue {
-    public dateInput = getDateTodayInYMD();
     public totalSalesInput = NaN;
     public onlineSalesInput = NaN;
     public cashInRegisterInput = NaN;
@@ -239,13 +232,25 @@
     public dailyAccountings = [];
     public isAccomplished = false;
 
+    public changeDateEventListener?: any;
+
     mounted() {
+      this.changeDateEventListener = subscribe('changeDate', this.setUp);
+    }
+
+    beforeUnmount() {
+      this.changeDateEventListener.unsubscribe();
+    }
+
+    private async setUp() {
       this.isLoading = true;
-      this.setTodaysDailyAccounting().then(() => this.isLoading = false);
+      await this.setTodaysDailyAccounting()
+      this.isLoading = false;
     }
 
     private async getTodaysDailyAccounting() {
-      const unixStart = new Date(this.dateInput).getTime();
+      console.log('getTodaysDailyAccounting');
+      const unixStart = store.state.dateUnix;
       const unixOneDayInMS = 86400 * 1000;
       const unixEnd = unixStart + unixOneDayInMS - 1; 
 
@@ -263,6 +268,7 @@
 
     private async setTodaysDailyAccounting() {
       this.getTodaysDailyAccounting().then(accountings => {
+        console.log(accountings);
         if (accountings.length > 0) {
           this.dailyAccountings = accountings;
           this.isAccomplished = true;
@@ -275,7 +281,6 @@
 
     private async sendNewDailyAccounting() {
       const newDailyAccounting = {
-        // date: new Date(this.dateInput).getTime(),
         date: store.state.dateUnix,
         totalSales: this.totalSalesInput,
         onlineSales: this.onlineSalesInput,
