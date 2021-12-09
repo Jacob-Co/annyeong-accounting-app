@@ -3,7 +3,7 @@
   <input 
     type="date"
     v-model="dateInput"
-    @change="updateDateStore"
+    @change="handleDateChange"
   />
 
   <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -80,6 +80,7 @@
   import StockForm from '../components/StockForm.vue';
   import store from '../store/index';
   import { getDateTodayInYMD } from '../utils/date.util';
+  import { publish } from '../utils/pubSub.util';
 
   @Options({
     components: {
@@ -99,10 +100,12 @@
       store.commit('setDateUnix', this.dateUnix);
     }
 
-    public updateDateStore(e: Event) {
+    public handleDateChange(e: Event) {
       // @ts-ignore
       this.dateUnix = new Date(e.target.value).getTime();
       store.commit('setDateUnix', this.dateUnix);
+
+      publish('changeDate');
     }
   }
 </script>
