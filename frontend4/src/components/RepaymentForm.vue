@@ -6,8 +6,20 @@
 
 <script lang="ts">
   import {Vue, Options} from 'vue-class-component'
-  export default class RepaymentForm extends Vue {
+  import { getBearerToken } from '../utils/authorization.util'
+  import { backendString } from '../utils/server.util'
 
+  @Options({})
+  export default class RepaymentForm extends Vue {
+    private async getCreditors() {
+      const result = await fetch(`${backendString}/api/creditors/all`, {
+        method: 'GET',
+        headers: {
+          'Authorization': getBearerToken() 
+        },
+      })
+      return await result.json();
+    }
   }
 </script>
 
