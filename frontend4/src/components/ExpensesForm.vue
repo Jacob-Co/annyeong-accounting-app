@@ -196,6 +196,11 @@
     }
 
     private async sendNewExpense(isDeducting: boolean = false) {
+      if (this.priceInput === null || this.expenseTypeInput === "") {
+        alert('Missing price or expense type');
+        return { status: 400}
+      }
+      
       const body = {
         date: store.state.dateUnix,
         expenseType: this.expenseTypeInput,
