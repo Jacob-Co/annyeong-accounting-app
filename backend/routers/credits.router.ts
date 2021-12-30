@@ -39,6 +39,31 @@ creditsRouter.get('/:startUnix/:endUnix/:creditorId',
   }
 )
 
+creditsRouter.get('/all/:creditorId', 
+  async (req: Request, res: Response) => {
+    try {
+      const businessEntity = new ObjectId(req.body.token.businessEntity);
+      const creditorId = req.params.creditorId;
+
+      const query = { creditor: new ObjectId(creditorId), businessEntity }
+      
+      const result = await creditsCollection.find(query).toArray() as Credit[];
+      
+      // const populatedResult = await Promise.all(result.map(async credit => {
+      //   const query = { _id: new ObjectId(credit.creditor.toString())};
+      //   const resultingCreditor = await creditorsCollection.findOne(query);
+      //   return { ...credit, creditor: resultingCreditor!.wholeName}
+      // }))
+      
+      // res.status(200).send(JSON.stringify(populatedResult));
+      res.status(200).send(result);
+    } catch(err: any) {
+      console.error(err.message);
+      res.status(500).send('Error in getting credits');
+    }
+  }
+)
+
 //POST
 creditsRouter.post('/', async (req: Request, res: Response) => {
   const session = mongoDBClient.startSession();
