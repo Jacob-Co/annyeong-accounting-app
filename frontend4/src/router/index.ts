@@ -5,6 +5,8 @@ import BusinessDetails from '../views/BusinessDetails.vue';
 import { isAuthenticated } from '@/utils/authorization.util';
 import DailyAccounting from '../views/DailyAccounting.vue';
 import  View from '../views/View.vue'; 
+import Repayment from '../views/Repayment.vue';
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -34,6 +36,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'DailyAccounting',
     component: DailyAccounting
   },
+  {
+    path: '/repayment',
+    name: 'Repayment',
+    component: Repayment
+  }
 ]
 
 const router = createRouter({

@@ -4,6 +4,7 @@
   <div id="nav">
     <router-link to="/" v-show="isLoggedIn"><button class="btn bg-success text-white">Add</button></router-link>
     <router-link to="/businessDetails" v-show="isLoggedIn"><button class="btn bg-info text-white">Business Details</button></router-link>
+    <router-link to="/repayment" v-show="isLoggedIn"><button class="btn bg-danger text-white">Repayment</button></router-link>
     <router-link to="/login" v-show="!isLoggedIn">Login</router-link> 
     <LogoutButton v-show="isLoggedIn"/> 
   </div>
