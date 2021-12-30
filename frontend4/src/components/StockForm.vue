@@ -198,6 +198,11 @@
       return await result.json();
     }
     private async sendNewStock(isDeducting: boolean = false) {
+      if (Number.isNaN(this.priceInput) || this.distributorInput === '') {
+        alert('Missing distributor or price');
+        return { status: 400 };
+      }
+
       const body = {
         // date: new Date(this.dateInput).getTime(),
         date: store.state.dateUnix,
