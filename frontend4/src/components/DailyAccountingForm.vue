@@ -235,6 +235,7 @@
     public changeDateEventListener?: any;
 
     mounted() {
+      this.setUp();
       this.changeDateEventListener = subscribe('changeDate', this.setUp);
     }
 
