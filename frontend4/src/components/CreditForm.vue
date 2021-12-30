@@ -187,6 +187,11 @@
     }
 
     private async sendNewCredit() {
+      if (this.creditorInput === '' || Number.isNaN(this.priceInput)) {
+        alert('Missing creditor or price');
+        return { status: 400 }
+      }
+
       const body = {
         date: store.state.dateUnix,
         creditor: this.creditorInput,
