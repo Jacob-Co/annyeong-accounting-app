@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Repayment</h1>
+    <RepaymentTab />
   </div>
 </template>
 
