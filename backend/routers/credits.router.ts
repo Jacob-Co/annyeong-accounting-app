@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { Credit } from '../models/credits.model';
 import { verifyUserToken } from '../services/auth.service';
 import { InsertOneResult, ObjectId } from 'mongodb';
-import { creditsCollection } from '../services/database.service';
+import { businessEntityCollection, creditsCollection } from '../services/database.service';
 import { creditorsCollection } from '../services/database.service';
 import { mongoDBClient } from '../services/database.service';
 
@@ -100,6 +100,46 @@ creditsRouter.post('/', async (req: Request, res: Response) => {
   }
 });
 
+creditsRouter.patch('/repay/:creditId/:creditorId', async (req: Request, res: Response) => {
+  const session = mongoDBClient.startSession();
+  
+  try {
+    const creditId = new ObjectId(req.params.creditId);
+    const businessEntityId = new ObjectId(req.body.token.businessEntity);
+    const creditorId = new ObjectId(req.params.creditorId);
+
+    await session.withTransaction(async () => {
+      // const targetCredit = await creditsCollection.findOne({
+      //   _id: creditId,
+      //   businessEntity: businessEntityId,
+      //   creditor: creditorId
+      // })
+
+      const targetCredit = await creditsCollection.findOneAndUpdate({
+        _id: creditId,
+        businessEntity: businessEntityId,
+        creditor: creditorId 
+      }, {
+        $set: { isPaid: true }
+      })
+      
+      const filter = {
+        _id: businessEntityId
+      }
+      const update = {
+        $inc: { balance: targetCredit!.value!.amount * -1 } 
+      }
+      await businessEntityCollection.findOneAndUpdate(filter, update)
+    });
+    
+    res.status(200).send(JSON.stringify('Repaid credit'))
+  } catch(err: any) {
+    console.error(err.message);
+    res.status(500).send(JSON.stringify('Error repaying credit'));
+  } finally {
+    await session.endSession();
+  }
+});
 // DELETE
 creditsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {

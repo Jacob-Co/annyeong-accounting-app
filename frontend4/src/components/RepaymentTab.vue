@@ -37,9 +37,9 @@
                     {{credit.amount}} ({{ getDateInYMDWrapper(credit.date) }})
                     <button
                       class="btn text-white bg-success d-inline"
-                      @click="deleteCreditButton($event, credit._id)"
+                      @click="repayCredit(credit._id)"
                     >
-                    pay
+                    &check;
                     </button>
                   </summary>
                   {{credit.remarks || 'No remarks'}}
@@ -67,7 +67,7 @@
               >
                 <details>
                   <summary>
-                    {{credit.amount}}
+                    {{credit.amount}} ({{ getDateInYMDWrapper(credit.date) }})
                     <span v-if="credit.isPaid" class="text-success">
                       paid
                     </span>
@@ -113,6 +113,22 @@
 
     mounted() {
       this.getCreditors().then(res => this.creditors = res);
+    }
+
+    public async repayCredit(creditId: string) {
+      // Maybe send the whole credit
+      const result = await fetch(`${backendString}/api/credits/repay/${creditId}/${this.creditorInput}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': getBearerToken()
+        }
+      });
+
+      if (result.status === 200) {
+        this.handleCreditorSelect(); 
+      } else {
+        alert('Error')
+      }
     }
 
     public getDateInYMDWrapper(dateString: string) {
