@@ -19,11 +19,11 @@
               <li class="list-group-item">Online Sales: {{dailyAccounting.onlineSales}}</li>
               <li class="list-group-item">Physical Sales: {{dailyAccounting.physicalSales}}</li>
               <li class="list-group-item">Total Deductions: {{dailyAccounting.totalDeductions}}</li>
-              <li class="list-group-item">Net Sales: {{dailyAccounting.netSales}}</li>
-              <li class="list-group-item">Net Cash: {{dailyAccounting.netCash}}</li>
+              <li class="list-group-item"><span class="bg-info">Net Sales:</span> {{dailyAccounting.netSales}}</li>
+              <li class="list-group-item"><span class="bg-warning">Net Cash:</span> {{dailyAccounting.netCash}}</li>
               <li class="list-group-item">Credits: {{dailyAccounting.credits}}</li>
               <li class="list-group-item">Take Home: {{dailyAccounting.takeHome}}</li>
-              <li class="list-group-item">Cash in Register: {{dailyAccounting.cashInRegister}}</li>
+              <li class="list-group-item"><span class="bg-success text-white">Cash in Register:</span> {{dailyAccounting.cashInRegister}}</li>
               <li class="list-group-item">Remarks: {{dailyAccounting.remarks}}</li>
             </ul>
           </div>
