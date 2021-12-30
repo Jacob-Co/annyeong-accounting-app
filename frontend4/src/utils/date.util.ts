@@ -1,8 +1,12 @@
 export function getDateTodayInYMD() {
-  const today = new Date();
-  const date = addPreZero(today.getDate().toString());
-  const month = addPreZero((today.getMonth() + 1).toString());
-  const year = today.getFullYear();
+  const targetDate = new Date();
+  return getDateInYMD(targetDate);
+}
+
+export function getDateInYMD(targetDate: Date) {
+  const date = addPreZero(targetDate.getDate().toString());
+  const month = addPreZero((targetDate.getMonth() + 1).toString());
+  const year = targetDate.getFullYear();
   return `${year}-${month}-${date}`
 }
 
