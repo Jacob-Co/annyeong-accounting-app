@@ -196,7 +196,7 @@
     }
 
     private async sendNewExpense(isDeducting: boolean = false) {
-      if (this.priceInput === null || this.expenseTypeInput === "") {
+      if (Number.isNaN(this.priceInput) || this.expenseTypeInput === "") {
         alert('Missing price or expense type');
         return { status: 400}
       }
