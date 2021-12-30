@@ -6,11 +6,11 @@
 
 <script lang="ts">
   import {Vue, Options} from 'vue-class-component'
-  import RepaymentForm from '../components/RepaymentForm.vue';
+  import RepaymentTab from '../components/RepaymentTab.vue';
 
   @Options({
     components: {
-      RepaymentForm
+      RepaymentTab
     }
   })
   export default class Repayment extends Vue {

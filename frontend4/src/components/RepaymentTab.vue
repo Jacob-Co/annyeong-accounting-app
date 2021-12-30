@@ -10,7 +10,7 @@
   import { backendString } from '../utils/server.util'
 
   @Options({})
-  export default class RepaymentForm extends Vue {
+  export default class RepaymentTab extends Vue {
     private async getCreditors() {
       const result = await fetch(`${backendString}/api/creditors/all`, {
         method: 'GET',
