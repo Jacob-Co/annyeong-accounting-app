@@ -5,6 +5,7 @@ import { InsertOneResult, ObjectId } from 'mongodb';
 import { businessEntityCollection, creditsCollection } from '../services/database.service';
 import { creditorsCollection } from '../services/database.service';
 import { mongoDBClient } from '../services/database.service';
+import { businessEntityRouter } from './business-entities.router';
 
 export const creditsRouter = express.Router();
 creditsRouter.use(express.json());
@@ -80,13 +81,12 @@ creditsRouter.post('/', async (req: Request, res: Response) => {
     await session.withTransaction(async () => {
       result = await creditsCollection.insertOne(credit);
       const filter = {
-        _id: creditorId,
-        businessEntity: businessEntityId
+        _id: businessEntityId
       }
       const update = {
         $inc: { balance: credit.amount } 
       }
-      await creditorsCollection.findOneAndUpdate(filter, update)
+      await businessEntityCollection.findOneAndUpdate(filter, update)
     })
     
     result!.acknowledged
@@ -142,18 +142,40 @@ creditsRouter.patch('/repay/:creditId/:creditorId', async (req: Request, res: Re
 });
 // DELETE
 creditsRouter.delete('/:id', async (req: Request, res: Response) => {
+  const session = mongoDBClient.startSession();
   try {
     const creditId = new ObjectId(req.params.id);
     const businessEntityId = new ObjectId(req.body.token.businessEntity);
 
-    const result = await creditsCollection.deleteOne({
-      _id: creditId,
-      businessEntity: businessEntityId 
-    });
+    await session.withTransaction(async () => {
+      const targetCredit = await creditsCollection.findOne({
+        _id: creditId,
+        businessEntity: businessEntityId
+      });
+
+      await creditsCollection.deleteOne({
+        _id: creditId,
+        businessEntity: businessEntityId 
+      });
+
+      // if target is not paid
+      if(!targetCredit!.isPaid) {
+        const filter = {
+          _id: businessEntityId
+        }
+        const update = {
+          $inc: { balance: targetCredit!.amount * -1 } 
+        }
+        await businessEntityCollection.findOneAndUpdate(filter, update)
+      }
+    })
+
 
     res.status(200).send('Successfully deleted credit');
   } catch (e: any) {
     console.error(e.message);
     res.status(500).send('Error in deleting credit');
+  } finally {
+    await session.endSession();
   }
 });
